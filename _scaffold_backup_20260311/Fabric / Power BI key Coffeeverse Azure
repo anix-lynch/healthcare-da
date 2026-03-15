@@ -1,0 +1,85 @@
+Fabric / Power BI key vs Coffeeverse Azure
+Date: 2026-03-14
+
+What we verified
+- Coffeeverse README and scripts use Azure resource credentials (Storage/Cosmos) and Azure CLI for deployment.
+- Fabric/Power BI flow in healthcare-da depends on Azure CLI login plus Power BI/Fabric API tokens.
+- Current ~/.config/secrets/global.env has Fabric auth template placeholders but values are blank for:
+  - AZURE_TENANT_ID
+  - AZURE_SUBSCRIPTION_ID
+  - AZURE_CLIENT_ID
+  - AZURE_CLIENT_SECRET
+  - FABRIC_REGION
+  - FABRIC_CAPACITY_SKU
+- FABRIC_WORKSPACE_ID is set in ~/.config/secrets/fabric.env.
+
+Why Coffeeverse may have worked before
+- Coffeeverse helper script updates export lines only if matching keys already exist in global.env.
+- If those lines were missing or replaced by non-export template lines, updates would not persist.
+- Result: repo can appear "configured" in docs while local secrets remain empty.
+
+Is Fabric key different?
+- Yes. Fabric requires identity/session auth (Azure CLI + tenant/subscription access + Power BI/Fabric scopes), not only static resource keys.
+- A workspace ID alone is not sufficient to pass Fabric doctor checks.
+
+Minimal unlock steps
+1) Populate missing Azure/Fabric values in ~/.config/secrets/global.env.
+2) Authenticate Azure CLI with the Fabric-enabled account.
+3) Confirm active subscription context matches Fabric tenant.
+4) Run scripts/fabric_doctor.sh and capture pass/fail.
+
+Safety note
+- Never store or paste raw secret values in tracker files. Keep values only in secret env files.
+# Handover for VS Code — Fabric / Power BI key + Coffeeverse Azure
+
+**Goal:** Get Fabric key for Power BI and have Azure/Coffeeverse keys in one place.
+
+---
+
+## What we found (Cursor side)
+
+- **`~/.config/secrets/global.env`** had no Coffeeverse Azure keys and the Fabric vars (AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, FABRIC_*) were empty placeholders.
+- **Coffeeverse** uses: Storage Account, Cosmos DB, and (for dbt) optional Synapse. Those need: `AZURE_STORAGE_ACCOUNT`, `AZURE_STORAGE_KEY`, `AZURE_COSMOS_URL`, `AZURE_COSMOS_KEY`.
+- **Subscription** in use: `240061ae-eb56-4e65-a6dc-11d4114b7267`. Resource names: `coffeeversestorage75993`, `coffeeverse-cosmos-12345`.
+- A backup `global.env.backup` had structure but placeholder/empty values for real keys.
+
+---
+
+## What we did (Cursor side)
+
+1. **Added four Coffeeverse Azure lines to `~/.config/secrets/global.env`** so they can be updated by script:
+   - `AZURE_STORAGE_ACCOUNT`, `AZURE_STORAGE_KEY`, `AZURE_COSMOS_URL`, `AZURE_COSMOS_KEY`
+2. **Added `infrastructure/scripts/fetch-azure-keys.sh`** — fetches Storage + Cosmos keys via `az` and overwrites those four in `global.env` (backs up first). No resource creation; assumes resources already exist.
+3. **Blocker:** `az login` was not done, so we could not run the fetch script. User must run `az login` then `./infrastructure/scripts/fetch-azure-keys.sh` to populate Coffeeverse keys.
+
+---
+
+## What you’re doing (VS Code / Fabric)
+
+- Helping get **Fabric key for Power BI**. That’s the same `~/.config/secrets/global.env` and the same Fabric block:
+  - `AZURE_TENANT_ID`
+  - `AZURE_SUBSCRIPTION_ID`
+  - `AZURE_CLIENT_ID`
+  - `AZURE_CLIENT_SECRET`
+  - Optionally: `FABRIC_WORKSPACE_ID`, `FABRIC_CAPACITY_SKU`, `FABRIC_REGION`, `MS_GRAPH_TENANT_ID`
+
+Fabric auth usually uses an app registration (client id + secret) or device/login; those go into the vars above.
+
+---
+
+## If everything succeeds
+
+- **Coffeeverse:** After `az login` + `fetch-azure-keys.sh`, `global.env` will have real Storage + Cosmos keys; Docker/Streamlit for Coffeeverse can use them.
+- **Fabric / Power BI:** After you add Fabric/Azure AD credentials to the same `global.env` (tenant, subscription, client id, client secret, and any Fabric workspace vars), scripts/tools that need Fabric or Power BI can source that file and work.
+- **One place:** All keys (Coffeeverse Azure + Fabric/Power BI) live in `~/.config/secrets/global.env`; no duplication.
+
+---
+
+## Quick ref
+
+| What | Where |
+|------|--------|
+| Coffeeverse key fetch (after `az login`) | `./infrastructure/scripts/fetch-azure-keys.sh` |
+| Full Azure resource create + keys | `./infrastructure/scripts/create-azure-resources.sh` |
+| Single secrets file | `~/.config/secrets/global.env` |
+| Fabric vars (fill from Azure AD / Fabric) | Same file, block with AZURE_TENANT_ID, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, FABRIC_* |
