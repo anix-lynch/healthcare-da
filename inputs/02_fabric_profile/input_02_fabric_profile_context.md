@@ -1,5 +1,7 @@
 # Input Context: Fabric Profile
 
+**What goes IN:** Workspace/tenant/warehouse metadata from Fabric (JSON). Used to decide if dbt and semantic model can run.
+
 Expected filename: fabric_workspace_connection_2026-03-11.json
 
 How to get it:

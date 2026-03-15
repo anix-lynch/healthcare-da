@@ -1,5 +1,8 @@
 # Input Context: API Export
 
+**What goes IN:** Snapshot of encounter data from the API (JSON). Used to prove API shape and demo continuity.  
+If file is empty: add data/raw/healthcare_dataset.csv then run scripts/populate_proof_artifacts.sh.
+
 Expected filename: encounters_export_2026-03-11.json
 
 How to get it:

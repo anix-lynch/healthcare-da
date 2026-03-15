@@ -49,6 +49,8 @@ Layer 3: Insights & Predictions
 
 **Business framing:** simulated/projected scenarios only. No real-world savings claimed.
 
+**Why are some input/output files empty?** The folders are the map: **inputs** = what goes in, **outputs** = what comes out (see each folder’s `*_context.md`). The actual JSON/MD files get filled when you run the pipeline. Gate: **data/raw/healthcare_dataset.csv** must exist (55K rows; see api/README for schema or sample). Then run `./scripts/populate_proof_artifacts.sh` to capture API stats, encounter snapshot, and (if dbt/ML run) proof into the output folders.
+
 ---
 
 ## 🚀 Quick Start (CLI Only)

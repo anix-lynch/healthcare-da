@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 # P4 check via CLI: list datasets (semantic models) in Fabric workspace via Power BI API.
-# Exit 0 if workspace has at least one dataset; else 1. Run after: source fabric.env, az login.
+# Exit 0 if workspace has at least one dataset; else 1.
+# Auth: sources global.env + fabric.env; uses AZURE_CLIENT_ID/SECRET/TENANT for service-principal login if no token.
 
 set -euo pipefail
 PBI_RESOURCE="https://analysis.windows.net/powerbi/api"
+GLOBAL_ENV="${HOME}/.config/secrets/global.env"
 SECRETS_FILE="${HOME}/.config/secrets/fabric.env"
+[[ -f "$GLOBAL_ENV" ]] && source "$GLOBAL_ENV"
+[[ -f "$SECRETS_FILE" ]] && source "$SECRETS_FILE"
+
 WORKSPACE_ID="${FABRIC_WORKSPACE_ID:-}"
 [[ -z "$WORKSPACE_ID" && -f "$SECRETS_FILE" ]] && WORKSPACE_ID=$(grep -E '^export FABRIC_WORKSPACE_ID=' "$SECRETS_FILE" | head -n1 | cut -d'=' -f2- | tr -d '"' || true)
 
@@ -14,8 +19,12 @@ if [[ -z "$WORKSPACE_ID" ]]; then
 fi
 
 TOKEN=$(az account get-access-token --resource "$PBI_RESOURCE" --query accessToken -o tsv 2>/dev/null || true)
+if [[ -z "$TOKEN" && -n "${AZURE_CLIENT_ID:-}" && -n "${AZURE_CLIENT_SECRET:-}" && -n "${AZURE_TENANT_ID:-}" ]]; then
+  az login --service-principal -u "$AZURE_CLIENT_ID" -p "$AZURE_CLIENT_SECRET" --tenant "$AZURE_TENANT_ID" -o none 2>/dev/null || true
+  TOKEN=$(az account get-access-token --resource "$PBI_RESOURCE" --query accessToken -o tsv 2>/dev/null || true)
+fi
 if [[ -z "$TOKEN" ]]; then
-  echo "az login required" >&2
+  echo "No Power BI token. Set AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID in global.env (and FABRIC_WORKSPACE_ID in fabric.env)." >&2
   exit 1
 fi
 

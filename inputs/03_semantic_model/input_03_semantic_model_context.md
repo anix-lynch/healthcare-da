@@ -1,5 +1,7 @@
 # Input Context: Semantic Model Bundle
 
+**What goes IN:** TMDL definition of the semantic model (tables, relationships, measures). Source for Fabric deployment and validation.
+
 Expected filename: healthcare_semantic_model_v1.tmdl
 
 How to get it:
