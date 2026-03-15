@@ -10,6 +10,8 @@ Single source of truth: [SPEC.md](SPEC.md).
 
 For agents: progress in SPEC; backup map below if any.
 
+**Repos:** Warehouse = GitLab (review here first). Showroom = GitHub (push only when shipable/presentable for headhunters).
+
 ## Scaffold backup
 
 Originals: `_scaffold_backup_20260311/`. Schema/mapping now in SPEC or outputs/02_schema/, outputs/02_mapping/.
