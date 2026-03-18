@@ -5,15 +5,15 @@
 
 ## Lakehouse Created
 
-**Lakehouse ID:** `28903c65-fb33-4a32-96ec-73898f26b13f`  
+**Lakehouse ID:** redacted (public-safe)  
 **Name:** HealthcareAnalytics  
-**Workspace:** 577de43f-21b4-479e-99b6-ea78f32e5216
+**Workspace:** redacted (public-safe)
 
 ## Table Loaded
 
 **Table:** `healthcare_encounters`  
 **Format:** Delta (managed)  
-**Location:** `abfss://577de43f-21b4-479e-99b6-ea78f32e5216@onelake.dfs.fabric.microsoft.com/28903c65-fb33-4a32-96ec-73898f26b13f/Tables/healthcare_encounters`  
+**Location:** redacted OneLake path (public-safe)  
 **Source:** 1,000 healthcare encounter records (sample from 55,500 total)
 
 ## Columns
