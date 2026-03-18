@@ -30,11 +30,7 @@ Ship an interview-ready, evidence-backed healthcare analytics stack (API → dbt
 | **Raw dataset** | data/raw/healthcare_dataset.csv | ✅ | AI | Verified: 55,501 rows. Unlocks: populate script → proof outputs. |
 | API export snapshot | inputs/01_api_export/encounters_export_2026-03-11.json | ✅ | AI | Captured (100 encounters sample). |
 | Semantic model source | inputs/03_semantic_model/healthcare_semantic_model_v1.tmdl | ✅ | AI | TMDL source in repo. |
-| AZURE_TENANT_ID | ~/.config/secrets/global.env | ✅ | AI | Verified. Unlocks: Fabric/Power BI auth (service principal). |
-| AZURE_SUBSCRIPTION_ID | ~/.config/secrets/global.env | ✅ | AI | Verified. |
-| AZURE_CLIENT_ID | ~/.config/secrets/global.env | ✅ | AI | Verified (Fabric-PowerBI app). Unlocks: P4 script (check_p4_semantic_model.sh). |
-| AZURE_CLIENT_SECRET | ~/.config/secrets/global.env | ✅ | AI | Verified. Unlocks: P4 script. |
-| FABRIC_WORKSPACE_ID | ~/.config/secrets/fabric.env | ✅ | AI | Verified. Unlocks: P4 script. |
+| Azure/Fabric auth vars | local secure env (not in repo) | ✅ | AI | Verified. Unlocks: Fabric/Power BI auth for P4 checks. |
 | dbt-fabric adapter | .venv with dbt-core + dbt-fabric | ✅ | AI | Created venv; dbt run successful. Unlocks: P3 (dbt run). |
 | mlflow + xgboost | pip install mlflow xgboost scikit-learn | ✅ | AI | Verified. Unlocks: P5 (ML training proof). |
 
@@ -55,12 +51,12 @@ Ship an interview-ready, evidence-backed healthcare analytics stack (API → dbt
 
 | Phase | Gate | Status | Who |
 |-------|------|--------|-----|
-| P0 Context + keys | Read AGENT.md, TOOL_STACK_AUDIT; verify global.env + fabric.env for Azure/Fabric keys | ✅ | AI |
+| P0 Context + keys | Read AGENT.md, TOOL_STACK_AUDIT; verify local secure env for Azure/Fabric auth | ✅ | AI |
 | P1 Scaffold repair | Backup legacy scaffold; create canonical SPEC.md | ✅ | AI |
 | P1.5 Raw data loaded | data/raw/healthcare_dataset.csv present (55,501 rows); run populate_proof_artifacts.sh | ✅ | AI |
 | P2 API proof | Verify API stats endpoint evidence (outputs/01_api_proof/ has content) | ✅ | AI |
 | P3 dbt proof | Created .venv with dbt-core + dbt-fabric; run dbt run; capture run_results.json | ✅ | AI |
-| P4 Semantic model proof | Run check_p4_semantic_model.sh (auth from global.env service principal) | ✅ | AI |
+| P4 Semantic model proof | Run check_p4_semantic_model.sh (auth from local service principal) | ✅ | AI |
 | P5 ML proof | Install mlflow; run train.py; capture run summary | ✅ | AI |
 | P6 Final interview lock | Approve end-to-end go/no-go (or approve with P3/P5 skipped if optional) | ⬜ | b-turn |
 
@@ -98,8 +94,8 @@ healthcare-da/
 
 ## Session Start (Agents)
 
-1. Read ~/.config/ai-context/AGENT.md (nudge rule + SPEC.md = only entry point).
-2. Read ~/.config/ai-context/TOOL_STACK_AUDIT.md (Bchan's tool stack; only suggest from this list).
+1. Read local AGENT context (nudge rule + SPEC.md = only entry point).
+2. Read local TOOL_STACK_AUDIT context (only suggest from approved stack).
 3. Use SPEC.md as single source of truth. Never a single read/done row; break docs into actionable items.
 4. Before any proof step: confirm prerequisite (raw data, keys, deps). If missing, set Status=⬜ and add to B-turns with exact command.
 5. No stub .md files in outputs/. Blockers go in SPEC.md B-turns only.
