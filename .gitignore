@@ -34,3 +34,9 @@ ml-pipeline/src/mlruns/
 # Local scratch files
 _scaffold_backup_20260311/linkedin feedback
 _scaffold_backup_20260311/
+
+# Agent / IDE — keep local only (do not ship to GitHub showroom clients)
+AGENTS.md
+orbit_karma.code-workspace
+.cursor/
+.backlog/
