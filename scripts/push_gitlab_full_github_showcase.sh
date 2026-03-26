@@ -38,7 +38,7 @@ if [[ -f "$ROOT/README.md" ]]; then
     echo ""
     echo "---"
     echo ""
-    echo "**Public mirror:** Code and proof artifacts only. Planning (SPEC), agent scaffolding (`.specify`, internal notes), and full Fabric work-in-progress live on the private GitLab repo."
+    echo '**Public mirror:** Code and proof artifacts only. Planning (SPEC), agent scaffolding (`.specify`, internal notes), and full Fabric work-in-progress live on the private GitLab repo.'
   } >>"$DEST/README.md"
 fi
 
