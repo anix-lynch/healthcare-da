@@ -6,9 +6,11 @@ Last updated: 2026-03-14 (sweep + workflow inference + auth inference applied)
 
 ## Goal
 
-Ship an interview-ready, evidence-backed healthcare analytics stack (API → dbt → semantic model → ML) with a single execution tracker; every claim traceable to code per **sla** (locked bullets + claim-to-code map).
+Ship an interview-ready, evidence-backed healthcare analytics stack (API → dbt → semantic model → ML) with **4 resume variants** (Data Analyst, Analytics Engineer, Data Engineer, Applied ML Engineer); every claim traceable to code per **sla_all_roles.md** (locked bullets + claim-to-code map).
 
-**Workflow order:** Raw data in place (55K rows) → run populate script → API/semantic proof captured → optionally install deps for dbt/ML → then all proof outputs filled. No proof screenshots until outputs are populated.
+**One repo, four resumes.** Same proof artifacts, different framing.
+
+**Workflow order:** Raw data in place (55K rows) → run populate script → API/semantic proof captured → optionally install deps for dbt/ML → then all proof outputs filled. Power BI dashboard (manual UI) = final step for Data Analyst variant.
 
 ## Where we are · Next step
 
@@ -21,7 +23,10 @@ Ship an interview-ready, evidence-backed healthcare analytics stack (API → dbt
 | P3 dbt proof | ✅ | |
 | P4 Semantic model proof | ✅ | |
 | P5 ML proof | ✅ | |
-| P6 Final interview lock | ⬜ | Bchan: approve go/no-go |
+| P6 Context docs (4 roles) | ✅ | |
+| P7 Power BI dashboard | ⬜ | Build visuals → screenshot (Data Analyst proof) |
+| P8 Resume drafts (4 roles) | ⬜ | Draft 4 resumes using sla_all_roles.md |
+| P9 Final interview lock | ⬜ | Bchan: approve go/no-go |
 
 ## Inputs
 
@@ -43,7 +48,10 @@ Ship an interview-ready, evidence-backed healthcare analytics stack (API → dbt
 | dbt run proof | outputs/02_dbt_proof/dbt_run_results_2026-03-11.json | ✅ | AI | Captured (fact_patient_encounters: success, 0.93s). |
 | Semantic model validation | outputs/03_bi_proof/semantic_model_validation_2026-03-11.md | ✅ | AI | P4 script passed: 1 dataset in Fabric workspace. |
 | MLflow run summary | outputs/04_ml_proof/mlflow_run_summary_2026-03-11.md | ✅ | AI | Captured (accuracy: 0.6641, AUC: 0.5097, feature importance). |
-| Resume claim traceability | outputs/05_resume_proof/resume_claim_traceability_2026-03-11.md | ✅ | AI | Claim→proof map with status. |
+| Context docs (4 roles) | healthcare-da-public/docs/ (BUSINESS_CONTEXT, ANALYTICS_ENGINEER_CONTEXT, DATA_ENGINEER_CONTEXT, ML_CONTEXT) | ✅ | AI | P6: 4 perspective docs created. |
+| Power BI dashboard screenshot | screenshots/powerbi_dashboard.png | ⬜ | b-turn | P7: Manual UI work (4 KPIs + 3 visuals). Unlocks: Data Analyst bullet 2 proof. |
+| Resume SLA (4 roles) | sla_all_roles.md | ✅ | AI | 4 bullets per role, shared proof artifacts. |
+| Resume drafts (4 roles) | claude_resume/_archive/v18-v21/ | ⬜ | AI | P8: Draft 4 resumes using sla_all_roles.md bullets. |
 | Warehouse/BI schema summary | outputs/02_schema/healthcare_analytics_schema_2026-03-11.md | ✅ | AI | Scaffold doc (35 lines). |
 | Repository mapping summary | outputs/02_mapping/repo_mapping_2026-03-11.md | ✅ | AI | Scaffold doc. |
 
@@ -58,18 +66,29 @@ Ship an interview-ready, evidence-backed healthcare analytics stack (API → dbt
 | P3 dbt proof | Created .venv with dbt-core + dbt-fabric; run dbt run; capture run_results.json | ✅ | AI |
 | P4 Semantic model proof | Run check_p4_semantic_model.sh (auth from local service principal) | ✅ | AI |
 | P5 ML proof | Install mlflow; run train.py; capture run summary | ✅ | AI |
-| P6 Final interview lock | Approve end-to-end go/no-go (or approve with P3/P5 skipped if optional) | ⬜ | b-turn |
+| P6 Context docs (4 roles) | Create BUSINESS_CONTEXT, ANALYTICS_ENGINEER_CONTEXT, DATA_ENGINEER_CONTEXT, ML_CONTEXT | ✅ | AI |
+| P7 Power BI dashboard | Build dashboard in Power BI UI (4 KPIs + 3 visuals) → export screenshot | ⬜ | b-turn |
+| P8 Resume drafts (4 roles) | Draft 4 resumes (v18-v21) using sla_all_roles.md bullets | ⬜ | AI |
+| P9 Final interview lock | Approve end-to-end go/no-go for all 4 resume variants | ⬜ | b-turn |
 
 ## B-turns Pending
 
-**P6 (final lock) — Bchan only:**
-Approve go/no-go when ready. You can approve with P3 skipped if not needed for interview (API + semantic model + ML proofs may be enough).
+**P7 (Power BI dashboard) — Bchan only:**
+Build dashboard in Power BI UI (manual work):
+1. Open workspace: `https://app.powerbi.com/groups/577de43f-21b4-479e-99b6-ea78f32e5216`
+2. Create report with 4 KPI cards (Total Encounters, Avg LOS, Readmission Rate, Avg Billing)
+3. Add 3 visuals (readmission by condition bar chart, LOS trend line chart, top hospitals table)
+4. Export → PNG → save to `screenshots/powerbi_dashboard.png`
+
+**P9 (final lock) — Bchan only:**
+Approve go/no-go for all 4 resume variants when ready. You can skip P7 if Power BI dashboard screenshot is not critical for Data Analyst role (API + dbt + ML proofs may be enough).
 
 ## File Map
 
 ```
 healthcare-da/
-├── sla                          ← Locked resume bullets + claim-to-code map (source of truth)
+├── sla                          ← Original Data Analyst bullets (legacy)
+├── sla_all_roles.md             ← 4 resume variants (Data Analyst, Analytics Engineer, Data Engineer, Applied ML) ← NEW
 ├── SPEC.md                      ← Single source of truth for progress
 ├── DASHBOARD.md                 ← Phase summary + flow
 ├── data/raw/                    ← 55,501 patient records (healthcare_dataset.csv)
@@ -79,18 +98,23 @@ healthcare-da/
 ├── ml-pipeline/                 ← XGBoost + MLflow
 ├── scripts/                     ← start_api.sh, populate_proof_artifacts.sh, check_p4_semantic_model.sh, fabric_doctor.sh
 ├── inputs/                      ← 01_api_export, 02_fabric_profile, 03_semantic_model, 04_ml_training_snapshot
-└── outputs/                     ← 01_api_proof, 02_dbt_proof, 03_bi_proof, 04_ml_proof, 05_resume_proof, 02_schema, 02_mapping
+├── outputs/                     ← 01_api_proof, 02_dbt_proof, 03_bi_proof, 04_ml_proof, 05_resume_proof, 02_schema, 02_mapping
+└── screenshots/                 ← powerbi_dashboard.png (TODO), mlflow_experiment_tracking.png (optional)
 ```
 
-## Proof Artifacts Status
+## Proof Artifacts Status (All 4 Roles)
 
-| Claim (from sla) | Code location | Proof artifact | Status |
-|------------------|---------------|----------------|--------|
+| Claim (from sla_all_roles.md) | Code location | Proof artifact | Status |
+|-------------------------------|---------------|----------------|--------|
 | 55,500 encounters, 6 conditions | api/app/main.py | outputs/01_api_proof/api_stats_response_2026-03-11.json | ✅ |
 | 11 GET endpoints | api/app/main.py (11 route decorators) | outputs/01_api_proof/api_stats_response_2026-03-11.json | ✅ |
 | dbt star schema, 8 marts, 3 tests | dbt-project/models/marts/core/*.sql (8 files), tests/*.sql (3 files) | outputs/02_dbt_proof/dbt_run_results_2026-03-11.json | ✅ |
 | Power BI semantic model (TMDL) | powerbi-model/*.tmdl | outputs/03_bi_proof/semantic_model_validation_2026-03-11.md | ✅ |
-| XGBoost + MLflow | ml-pipeline/src/train.py | outputs/04_ml_proof/mlflow_run_summary_2026-03-11.md | ✅ |
+| Power BI dashboard (4 KPIs + 3 visuals) | Power BI workspace | screenshots/powerbi_dashboard.png | ⬜ P7 |
+| XGBoost + MLflow (accuracy 0.66, AUC 0.51) | ml-pipeline/src/train.py | outputs/04_ml_proof/mlflow_run_summary_2026-03-11.md | ✅ |
+| Feature importance (top 8 features) | ml-pipeline/src/train.py | outputs/04_ml_proof/mlflow_run_summary_2026-03-11.md | ✅ |
+| Feast feature store (DynamoDB, 3 views) | anix-lynch/feast repo | feast repo README + tests/ | ⬜ External |
+| Context docs (4 roles) | healthcare-da-public/docs/ | BUSINESS_CONTEXT, ANALYTICS_ENGINEER_CONTEXT, DATA_ENGINEER_CONTEXT, ML_CONTEXT | ✅ |
 
 ## Session Start (Agents)
 
