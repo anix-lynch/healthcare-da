@@ -33,7 +33,8 @@ All artifacts live under **`fabric_april/outputs/`**. Each **screenshot must be 
 
 - **F1:** Done in repo (real lakehouse explorer PNG + bronze upload proof text).
 - **F2:** Done — pipeline **`bronze-silver-gold`**, screenshot **`outputs/01_screenshots/data_factory_pipeline_run.png`**, narrative **`outputs/03_proof/f2_pipeline_run.txt`**.
-- **F3–F4:** Need **`warehouse_sql_results.png`** and **`powerbi_directlake_report.png`** (see fallback section below).
+- **F3:** Done — **`outputs/01_screenshots/warehouse_sql_results.png`**, narrative **`outputs/03_proof/f3_warehouse_sql.txt`** (HealthcareWarehouse, `SELECT TOP 100 * FROM dbo.healthcare_encounters`).
+- **F4:** Need **`powerbi_directlake_report.png`** only (see fallback section below).
 
 ### Workspace context (for navigation)
 
