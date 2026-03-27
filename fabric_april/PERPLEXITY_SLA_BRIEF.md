@@ -32,7 +32,7 @@ All artifacts live under **`fabric_april/outputs/`**. Each **screenshot must be 
 ### Current status (update this line when sharing)
 
 - **F1:** Done in repo (real lakehouse explorer PNG + bronze upload proof text).
-- **F2:** Pipeline **`bronze-silver-gold`** succeeded (lakehouse → warehouse copy). Narrative + settings in **`outputs/03_proof/f2_pipeline_run.txt`**. **Ensure** `outputs/01_screenshots/data_factory_pipeline_run.png` is a real PNG **> 2 KB** (not a placeholder).
+- **F2:** Done — pipeline **`bronze-silver-gold`**, screenshot **`outputs/01_screenshots/data_factory_pipeline_run.png`**, narrative **`outputs/03_proof/f2_pipeline_run.txt`**.
 - **F3–F4:** Need **`warehouse_sql_results.png`** and **`powerbi_directlake_report.png`** (see fallback section below).
 
 ### Workspace context (for navigation)
