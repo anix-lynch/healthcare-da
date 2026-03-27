@@ -6,7 +6,7 @@
 
 | Metric | Now | Target |
 |--------|-----|--------|
-| Fabric buyer-visible proof set in repo | 3 / 4 | **4** screenshots **or** 3 screenshots + 1 pipeline JSON export |
+| Fabric buyer-visible proof set in repo | 4 / 4 | **4** screenshots **or** 3 screenshots + 1 pipeline JSON export |
 
 **Done when (machine-checkable):** All files in `fabric_april/outputs/` below exist; each screenshot **> 2 KB** (not empty); `fabric_pipeline_definition.json` is valid JSON (or markdown export if JSON is blocked by tenant policy).
 
