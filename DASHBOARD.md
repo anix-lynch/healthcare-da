@@ -16,9 +16,9 @@ Interview-ready healthcare DA stack: API (55K encounters) → dbt warehouse → 
 | P3 dbt proof | ✅ | AI |
 | P4 Semantic model proof | ✅ | AI |
 | P5 ML proof | ✅ | AI |
-| P6 Final interview lock | ✅ | Human |
+| P9 Final interview lock | ✅ | Human |
 
-All phases done. Single source of truth: **SPEC.md**.
+Core proof phases done (see **SPEC.md** for P7/P8 optional polish).
 
 ## Flow
 
