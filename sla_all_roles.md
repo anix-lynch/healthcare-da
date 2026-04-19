@@ -1,6 +1,6 @@
 # Resume SLA - Healthcare Analytics (All 4 Roles)
 
-Owner: Bchan  
+Owner: Anix Lynch  
 Date created: 2026-03-17  
 Rule: Every number must be explainable from code/docs in this repo.
 
@@ -198,7 +198,7 @@ Each resume points to the same repo: `anix-lynch/healthcare-analytics`
 3. ⬜ **Verify Feast repo** → Link in Applied ML Engineer bullet 3
 4. ⬜ **Draft 4 resumes** → One per role, using bullets from this SLA
 5. ⬜ **Update SPEC.md** → Add P7 (Power BI dashboard), P8 (Resume drafts)
-6. ⬜ **Final review** → Bchan approves all 4 resumes
+6. ⬜ **Final review** → Human approves all 4 resumes
 
 ---
 
