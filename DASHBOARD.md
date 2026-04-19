@@ -1,6 +1,6 @@
 # DASHBOARD: Healthcare Analytics
 
-Last updated: 2026-03-15
+Last updated: 2026-04-19
 
 ## What we're doing
 
@@ -16,7 +16,7 @@ Interview-ready healthcare DA stack: API (55K encounters) → dbt warehouse → 
 | P3 dbt proof | ✅ | AI |
 | P4 Semantic model proof | ✅ | AI |
 | P5 ML proof | ✅ | AI |
-| P6 Final interview lock | ✅ 👈 we are here | b-turn |
+| P6 Final interview lock | ✅ | Human |
 
 All phases done. Single source of truth: **SPEC.md**.
 

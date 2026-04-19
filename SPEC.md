@@ -1,8 +1,8 @@
 # SPEC: Healthcare Analytics Progress Tracker
 
-**👤 5% you · 🤖 95% agent** — Bchan: P6 approve only (or skip P3/P5 if not needed). Agent runs terminal with keys from config.
+**👤 5% you · 🤖 95% agent** — Human: P9 final approval (P7/P8 optional polish). Agent runs terminal with keys from local secure env.
 
-Last updated: 2026-03-14 (sweep + workflow inference + auth inference applied)
+Last updated: 2026-04-19 (P9 interview lock + showroom closeout)
 
 ## Goal
 
@@ -10,7 +10,7 @@ Ship an interview-ready, evidence-backed healthcare analytics stack (API → dbt
 
 **One repo, four resumes.** Same proof artifacts, different framing.
 
-**Workflow order:** Raw data in place (55K rows) → run populate script → API/semantic proof captured → optionally install deps for dbt/ML → then all proof outputs filled. Power BI dashboard (manual UI) = final step for Data Analyst variant.
+**Workflow order:** Raw data in place (55K rows) → run populate script → API/semantic proof captured → optionally install deps for dbt/ML → then all proof outputs filled. Power BI dashboard (manual UI) = optional polish for Data Analyst variant.
 
 ## Where we are · Next step
 
@@ -24,9 +24,9 @@ Ship an interview-ready, evidence-backed healthcare analytics stack (API → dbt
 | P4 Semantic model proof | ✅ | |
 | P5 ML proof | ✅ | |
 | P6 Context docs (4 roles) | ✅ | |
-| P7 Power BI dashboard | ⬜ | Build visuals → screenshot (Data Analyst proof) |
-| P8 Resume drafts (4 roles) | ⬜ | Draft 4 resumes using sla_all_roles.md |
-| P9 Final interview lock | ⬜ | Bchan: approve go/no-go |
+| P7 Power BI dashboard | ⬜ | Optional: build visuals → screenshot (Data Analyst proof) |
+| P8 Resume drafts (4 roles) | ⬜ | Optional: draft 4 resumes using sla_all_roles.md |
+| P9 Final interview lock | ✅ | APPROVED 2026-04-19 — core proofs interview-ready; showroom push allowed |
 
 ## Inputs
 
@@ -49,7 +49,7 @@ Ship an interview-ready, evidence-backed healthcare analytics stack (API → dbt
 | Semantic model validation | outputs/03_bi_proof/semantic_model_validation_2026-03-11.md | ✅ | AI | P4 script passed: 1 dataset in Fabric workspace. |
 | MLflow run summary | outputs/04_ml_proof/mlflow_run_summary_2026-03-11.md | ✅ | AI | Captured (accuracy: 0.6641, AUC: 0.5097, feature importance). |
 | Context docs (4 roles) | healthcare-da-public/docs/ (BUSINESS_CONTEXT, ANALYTICS_ENGINEER_CONTEXT, DATA_ENGINEER_CONTEXT, ML_CONTEXT) | ✅ | AI | P6: 4 perspective docs created. |
-| Power BI dashboard screenshot | screenshots/powerbi_dashboard.png | ⬜ | b-turn | P7: Manual UI work (4 KPIs + 3 visuals). Unlocks: Data Analyst bullet 2 proof. |
+| Power BI dashboard screenshot | screenshots/powerbi_dashboard.png | ⬜ | Human | P7: Manual UI work (4 KPIs + 3 visuals). Unlocks: Data Analyst bullet 2 proof. |
 | Resume SLA (4 roles) | sla_all_roles.md | ✅ | AI | 4 bullets per role, shared proof artifacts. |
 | Resume drafts (4 roles) | claude_resume/_archive/v18-v21/ | ⬜ | AI | P8: Draft 4 resumes using sla_all_roles.md bullets. |
 | Warehouse/BI schema summary | outputs/02_schema/healthcare_analytics_schema_2026-03-11.md | ✅ | AI | Scaffold doc (35 lines). |
@@ -67,21 +67,22 @@ Ship an interview-ready, evidence-backed healthcare analytics stack (API → dbt
 | P4 Semantic model proof | Run check_p4_semantic_model.sh (auth from local service principal) | ✅ | AI |
 | P5 ML proof | Install mlflow; run train.py; capture run summary | ✅ | AI |
 | P6 Context docs (4 roles) | Create BUSINESS_CONTEXT, ANALYTICS_ENGINEER_CONTEXT, DATA_ENGINEER_CONTEXT, ML_CONTEXT | ✅ | AI |
-| P7 Power BI dashboard | Build dashboard in Power BI UI (4 KPIs + 3 visuals) → export screenshot | ⬜ | b-turn |
+| P7 Power BI dashboard | Build dashboard in Power BI UI (4 KPIs + 3 visuals) → export screenshot | ⬜ | Human |
 | P8 Resume drafts (4 roles) | Draft 4 resumes (v18-v21) using sla_all_roles.md bullets | ⬜ | AI |
-| P9 Final interview lock | Approve end-to-end go/no-go for all 4 resume variants | ⬜ | b-turn |
+| P9 Final interview lock | Approve end-to-end go/no-go for all 4 resume variants | ✅ | Human |
 
 ## B-turns Pending
 
-**P7 (Power BI dashboard) — Bchan only:**
-Build dashboard in Power BI UI (manual work):
-1. Open workspace: `https://app.powerbi.com/groups/577de43f-21b4-479e-99b6-ea78f32e5216`
-2. Create report with 4 KPI cards (Total Encounters, Avg LOS, Readmission Rate, Avg Billing)
-3. Add 3 visuals (readmission by condition bar chart, LOS trend line chart, top hospitals table)
-4. Export → PNG → save to `screenshots/powerbi_dashboard.png`
+**P7 (Power BI dashboard) — optional human work**
 
-**P9 (final lock) — Bchan only:**
-Approve go/no-go for all 4 resume variants when ready. You can skip P7 if Power BI dashboard screenshot is not critical for Data Analyst role (API + dbt + ML proofs may be enough).
+Build dashboard in Power BI UI (manual work):
+
+1. Open the Power BI workspace in the same Fabric tenant used for P4 semantic validation.
+2. Create report with 4 KPI cards (Total Encounters, Avg LOS, Readmission Rate, Avg Billing).
+3. Add 3 visuals (readmission by condition bar chart, LOS trend line chart, top hospitals table).
+4. Export → PNG → save to `screenshots/powerbi_dashboard.png`.
+
+**P9 (final lock):** ✅ Approved 2026-04-19 — API, dbt, semantic model, and ML proof artifacts are interview-ready; GitHub showroom push cleared. P7/P8 remain optional. Fabric/API route PNGs under `screenshots/` can be regenerated with `python3 scripts/render_proof_screenshots.py`; replace with browser captures when convenient.
 
 ## File Map
 
@@ -96,10 +97,10 @@ healthcare-da/
 ├── dbt-project/                 ← Star schema (8 marts, 3 tests)
 ├── powerbi-model/               ← TMDL semantic model
 ├── ml-pipeline/                 ← XGBoost + MLflow
-├── scripts/                     ← start_api.sh, populate_proof_artifacts.sh, check_p4_semantic_model.sh, fabric_doctor.sh
+├── scripts/                     ← start_api.sh, populate_proof_artifacts.sh, check_p4_semantic_model.sh, fabric_doctor.sh, render_proof_screenshots.py
 ├── inputs/                      ← 01_api_export, 02_fabric_profile, 03_semantic_model, 04_ml_training_snapshot
 ├── outputs/                     ← 01_api_proof, 02_dbt_proof, 03_bi_proof, 04_ml_proof, 05_resume_proof, 02_schema, 02_mapping
-└── screenshots/                 ← powerbi_dashboard.png (TODO), mlflow_experiment_tracking.png (optional)
+└── screenshots/                 ← proof PNGs (see SCREENSHOTS.md); powerbi_dashboard.png (P7 optional)
 ```
 
 ## Proof Artifacts Status (All 4 Roles)

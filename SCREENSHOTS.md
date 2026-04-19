@@ -2,6 +2,8 @@
 
 **Purpose:** Visual evidence for each resume bullet claim.
 
+**How these files are produced:** Run `python3 scripts/render_proof_screenshots.py` to regenerate PNGs from `outputs/` proof JSON and Markdown (and `openapi.json` when the API is running). Fabric rows are **text summaries** of validation output; swap in true browser captures of Fabric / Power BI when you want pixel-perfect UI shots.
+
 ---
 
 ## 1. 55,500 Encounters + 6 Clinical Conditions
