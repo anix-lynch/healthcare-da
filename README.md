@@ -213,7 +213,7 @@ healthcare-analytics/
 
 1. **Start the Healthcare API** (Recommended first step!)
 ```bash
-cd /Users/anixlynch/dev/healthcare-analytics
+cd healthcare-da
 ./scripts/start_api.sh
 
 # API runs at http://localhost:8000
@@ -260,32 +260,20 @@ dbt test
 - **Cost per Patient Day:** $1,648 average
 - **Revenue per Hospital:** Varies by facility size
 
-### ML Model Performance
-- **AUC-ROC:** Target > 0.85
-- **Precision @ 80% Recall:** Target > 0.70
-- **Readmissions Prevented:** 630 annually (15% reduction)
+### ML Model Performance (current baseline)
+- **AUC-ROC:** 0.51 on synthetic data — illustrative pipeline, not a production model
+- **Purpose:** demonstrate XGBoost + MLflow lifecycle, not predictive lift
+- **Honest framing:** a retrained model on real clinical features would be
+  required before any production use; this repo proves the *engineering path*
 
 ---
 
-## 💰 Business Impact
+## 💰 Business Framing (Illustrative Only)
 
-### Cost Savings Calculation
-
-```
-Assumptions:
-- CMS penalty per readmission: $15,000
-- Current readmission rate: 18%
-- Model precision at 80% recall: 70%
-- Intervention success rate: 40%
-
-Results (10,000 annual discharges):
-- Readmissions prevented: 630
-- Gross savings: $9.45M
-- Intervention cost: $1.13M
-- NET SAVINGS: $8.32M
-
-ROI: 740%
-```
+Readmission risk reduction is the canonical value lever in this domain. Any
+dollar figures in this repo are **illustrative scenario math**, not measured
+outcomes. See `sla` for the traceability rule: every resume bullet must point
+to a file, not to a projected ROI.
 
 ---
 
@@ -486,23 +474,17 @@ Dataset: CC0-1.0 (Public Domain) - Synthetic healthcare data from Kaggle
 
 **Built entirely via CLI/API - Zero GUI! 🔥**
 
-## 🎉 Project Status: 100% Complete!
+## Deployment snapshot
 
-**All components successfully deployed to Microsoft Fabric:**
-- ✅ Data Warehouse: 11 models deployed (1 table + 10 views)
-- ✅ Semantic Model: Connected via Direct Lake to warehouse
-- ✅ ML Pipeline: Model trained and tracked in MLflow
-- ✅ REST API: Serving 55,500 patient records
+All four components are deployed to a Microsoft Fabric workspace:
+- Data Warehouse: 11 dbt models (1 table + 10 views)
+- Semantic Model: connected via Direct Lake to the warehouse
+- ML Pipeline: baseline XGBoost + MLflow experiment (illustrative — see AUC note)
+- REST API: FastAPI serving 55,500 records via 11 endpoints
 
-**Deployment Details:**
-- **Fabric Workspace:** HealthcareAnalytics
-- **Warehouse:** HealthcareWarehouse (Direct Lake)
-- **Semantic Model:** Healthcare Semantic Model
-- **Authentication:** Azure CLI (trial account)
+Screenshots of the live Fabric workspace, Lakehouse, FastAPI docs, and Power BI
+report live in [`screenshots/`](screenshots/) and are indexed in
+[`SCREENSHOTS.md`](SCREENSHOTS.md).
 
-**View in Fabric:**
-- Warehouse: https://app.fabric.microsoft.com/groups/577de43f-21b4-479e-99b6-ea78f32e5216/warehouses/4f2972f2-23fd-47fc-aaa3-61eb0f366446
-- Workspace: https://app.fabric.microsoft.com/groups/577de43f-21b4-479e-99b6-ea78f32e5216
-
-Last Updated: December 8, 2025
+Authentication path for the CLI + API calls is documented in `scripts/fabric_doctor.sh`.
 
