@@ -1,5 +1,7 @@
 # Healthcare Data Analytics Platform
 
+> 🟥 **L1 Truth** part of the [L1→L3 healthcare AI platform](https://gozeroshot.dev) — Truth → Features → Signals → Actions → Human adoption. This repo = a Microsoft Fabric medallion warehouse + semantic model.
+
 **Data Analytics Engineer portfolio project:** End-to-end analytics solution for hospital operations.
 
 **Demo:** 55,500 synthetic patient records | REST API → dbt warehouse → Power BI semantic model → ML workflow
@@ -487,4 +489,3 @@ report live in [`screenshots/`](screenshots/) and are indexed in
 [`SCREENSHOTS.md`](SCREENSHOTS.md).
 
 Authentication path for the CLI + API calls is documented in `scripts/fabric_doctor.sh`.
-
