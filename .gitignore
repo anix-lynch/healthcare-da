@@ -40,3 +40,11 @@ AGENTS.md
 orbit_karma.code-workspace
 .cursor/
 .backlog/
+_private/
+.venv/
+**/venv/
+**/__pycache__/
+.DS_Store
+dbt-project/target/
+dbt-project/logs/
+dbt-project/dbt_packages/
