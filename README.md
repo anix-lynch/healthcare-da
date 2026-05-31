@@ -41,8 +41,8 @@ healthcare-da/
 └── openapi_snapshot.json  ✅ frozen public API surface
 ```
 
-<details>
-<summary><b>▸ Full file tree</b> (every file, plain-language — click to expand)</summary>
+<details open>
+<summary><b>Full file tree</b> (every file, plain-language — click to collapse)</summary>
 
 ```
 healthcare-da/
