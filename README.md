@@ -23,17 +23,70 @@ bronze → silver → gold        (dbt medallion in Fabric lakehouse/warehouse)
 - **MLflow lineage** — training runs logged with metrics (honest AUC on synthetic data).
 - **FastAPI** — OpenAPI-documented endpoints serving the gold marts.
 
-## Repo map
+## Repo Map
+
+What lives where, at a glance:
+
 ```
-dbt-project/     medallion models · tests · macros · seeds · snapshots
-api/             FastAPI service + OpenAPI snapshot
-powerbi-model/   TMDL semantic model (measures, relationships)
-ml-pipeline/     MLflow training + lineage
-data/raw/        synthetic source data (clearly labeled)
-inputs/ outputs/ reproducible fixtures + generated artifacts
-scripts/         ingestion / build helpers
-screenshots/     Power BI dashboard captures
+healthcare-da/
+├── dbt-project/     ✅ medallion SQL models (raw → clean → gold) + data tests
+├── api/             ✅ FastAPI service serving the gold marts + OpenAPI snapshot
+├── powerbi-model/   ✅ TMDL semantic model — measures + relationships, versioned like code
+├── ml-pipeline/     ✅ readmission model — train + score, MLflow-logged
+├── data/raw/        ✅ synthetic source data (clearly labeled, no real PHI)
+├── inputs/          ✅ reproducible fixtures (API export · Fabric profile · semantic model)
+├── outputs/         🖼️  proof artifacts per stage (api · dbt · BI · ML run results)
+├── scripts/         ✅ ingestion + build + Fabric helpers
+├── screenshots/     🖼️  live Power BI / Fabric captures (proof it's real)
+└── openapi_snapshot.json  ✅ frozen public API surface
 ```
+
+<details>
+<summary><b>▸ Full file tree</b> (every file, plain-language — click to expand)</summary>
+
+```
+healthcare-da/
+├── dbt-project/                      the Fabric medallion warehouse
+│   ├── models/staging/               ✅ stg_healthcare + sources — raw landing
+│   ├── models/intermediate/          ✅ enriched encounters + readmission logic
+│   ├── models/marts/core/            ✅ 8 dims + fact_patient_encounters (the gold star schema)
+│   ├── tests/                        ✅ 3 SQL data tests (no negative LOS, discharge>admit…)
+│   ├── dbt_project.yml · profiles    ✅ dbt config
+│   └── README.md                     📖 how the marts are built
+├── api/
+│   ├── app/main.py                   ✅ FastAPI — serves the gold marts as endpoints
+│   ├── test_api.py                   ✅ API smoke tests
+│   ├── requirements.txt              ✅ API deps
+│   └── README.md                     📖 how the API layer works
+├── powerbi-model/                    the governed semantic layer (TMDL = code)
+│   ├── model.tmdl · relationships    ✅ certified measures + star-schema relationships
+│   └── tables/*.tmdl                 ✅ Date · Doctor · Hospital · Patient · Encounters
+├── ml-pipeline/src/                  ✅ train.py + score.py — readmission model (MLflow)
+├── data/raw/                         ✅ synthetic healthcare dataset + signals (no PHI)
+├── inputs/                           reproducible fixtures (each stage + a context note)
+│   ├── 01_api_export/                ✅ encounters pulled from the API
+│   ├── 02_fabric_profile/            ✅ Fabric workspace connection used
+│   ├── 03_semantic_model/            ✅ the TMDL semantic model snapshot
+│   └── 04_ml_training_snapshot/      ✅ frozen training dataset
+├── outputs/                          🖼️  proof captured per pipeline stage
+│   ├── 01_api_proof/                 🖼️  live API stats response
+│   ├── 02_dbt_proof/                 🖼️  dbt run results (tests passing)
+│   ├── 02_schema · 02_mapping/       📖 schema + repo mapping notes
+│   ├── 03_bi_proof/                  🖼️  Fabric lakehouse + semantic-model validation
+│   └── 04_ml_proof/                  🖼️  MLflow run summary (honest AUC)
+├── scripts/                          ingestion + Fabric + build helpers
+│   ├── upload_bronze_to_onelake.py   ✅ loads bronze data into Fabric OneLake
+│   ├── get_fabric_info.py            ✅ reads the live Fabric workspace state
+│   ├── render_proof_screenshots.py   ✅ regenerates the screenshot proofs
+│   ├── add_visuals_to_report.py      ✅ builds the BI report visuals
+│   ├── *.sh                          ✅ Fabric API / Power BI / start-api helpers
+│   └── README_POWERBI_CLI.md         📖 how to drive Power BI from the CLI
+├── screenshots/                      🖼️  live Power BI + Fabric model-view captures
+├── openapi_snapshot.json             ✅ frozen public API surface
+├── .vscode/settings.json             ✅ editor config
+└── README.md · LICENSE               📖 the story + MIT license
+```
+</details>
 
 ## Data note
 All data is **synthetic** (clearly labeled) — no real PHI. Suitable for a public portfolio.
