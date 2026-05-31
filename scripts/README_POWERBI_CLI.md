@@ -130,7 +130,7 @@ But this requires:
 ## Run It Now
 
 ```bash
-cd /Users/anixlynch/dev/00_portfolio/06devrel/orbit_karma/Powerbi/healthcare-da
+cd 00_portfolio/06devrel/orbit_karma/Powerbi/healthcare-da
 ./scripts/create_powerbi_dashboard.sh
 ```
 

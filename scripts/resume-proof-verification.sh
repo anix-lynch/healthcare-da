@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-PROJECT_ROOT="/Users/anixlynch/dev/healthcare-analytics"
+PROJECT_ROOT="healthcare-analytics"
 cd "$PROJECT_ROOT"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
