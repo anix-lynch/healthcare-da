@@ -38,5 +38,20 @@ screenshots/     Power BI dashboard captures
 ## Data note
 All data is **synthetic** (clearly labeled) — no real PHI. Suitable for a public portfolio.
 
+## Live Fabric proof
+
+Captured from the live Microsoft Fabric workspace (synthetic data). The semantic-model
+relationships were defined as code (TMDL) and pushed via the Fabric REST API, then rendered
+in Model view — code-first, not click-built.
+
+| | |
+|---|---|
+| ![Ingest](screenshots/fabric_files_ingest.png) | ![Medallion](screenshots/fabric_medallion_bronze.png) |
+| Lakehouse Files — data ingested via Dataflow Gen2 | Medallion bronze layer |
+| ![Star schema](screenshots/fabric_model_view_starschema.png) | ![DAX](screenshots/fabric_dax_query.png) |
+| Semantic model — fact→dim star schema (1—∞, FK/PK) | DAX query over the modeled relationships |
+| ![Lineage](screenshots/fabric_lineage_pipeline.png) | ![Table](screenshots/fabric_table_preview.png) |
+| End-to-end lineage: CSV → Dataflow → Lakehouse → semantic model → report | Warehouse table preview |
+
 ---
 *Part of Anix Lynch's L1→L3 healthcare AI platform — see [gozeroshot.dev](https://gozeroshot.dev). MIT licensed.*
