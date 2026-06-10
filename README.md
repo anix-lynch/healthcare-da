@@ -1,4 +1,4 @@
-# healthcare-openfda-fabric
+# Healthcare Analytics on Microsoft Fabric — openFDA
 
 > **openFDA drug-safety analytics on Microsoft Fabric — built code-first, no GUI.**
 > Real openFDA FAERS reports land in OneLake as Delta, a Direct Lake semantic model and a
