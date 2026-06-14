@@ -1,0 +1,35 @@
+table mart_drug_safety_kpis
+
+	measure 'Avg Serious Rate' = DIVIDE(SUM('mart_drug_safety_kpis'[serious_reports]), SUM('mart_drug_safety_kpis'[total_reports]))
+
+	measure 'Drug Count' = COUNTROWS('mart_drug_safety_kpis')
+
+	measure 'Total Reports' = SUM('mart_drug_safety_kpis'[total_reports])
+
+	column primary_drug
+		dataType: string
+		sourceColumn: primary_drug
+
+	column total_reports
+		dataType: int64
+		sourceColumn: total_reports
+
+	column serious_reports
+		dataType: int64
+		sourceColumn: serious_reports
+
+	column serious_rate
+		dataType: double
+		sourceColumn: serious_rate
+
+	column distinct_reactions
+		dataType: int64
+		sourceColumn: distinct_reactions
+
+	partition mart_drug_safety_kpis = entity
+		mode: directLake
+		source
+			entityName: mart_drug_safety_kpis
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

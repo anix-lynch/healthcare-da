@@ -1,0 +1,12 @@
+{
+  "_doc": "Semantic contract — the governed metric definitions the Direct Lake model exposes. One definition per measure so BI, ad-hoc SQL, and AI agents all compute the same number (no metric drift). This is the 'context' an AI agent needs to answer safely.",
+  "contract_version": "1.0.0",
+  "entity": "mart_drug_safety_kpis",
+  "grain": "primary_drug",
+  "measures": [
+    {"name": "Total Reports", "dax": "SUM(mart_drug_safety_kpis[total_reports])", "meaning": "count of adverse-event reports", "format": "integer"},
+    {"name": "Avg Serious Rate", "dax": "AVERAGE(mart_drug_safety_kpis[serious_rate])", "meaning": "mean per-drug serious fraction", "format": "percent", "note": "per-drug average; event-weighted serious rate at N=3,000 is 51.3%"}
+  ],
+  "dimensions": ["primary_drug", "dim_reaction", "received_date", "occurcountry"],
+  "consumers": ["Power BI report ef468dc5", "AI agents (grounded answers)", "ad-hoc SQL analysts"]
+}

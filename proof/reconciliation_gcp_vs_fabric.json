@@ -1,0 +1,24 @@
+{
+  "_doc": "GCP BigQuery source vs Microsoft Fabric metric layer @ N=3,000. mart counts verified identical via DAX (executeQueries); source counts from BigQuery healthcare_analytics.",
+  "n_reports": 3000,
+  "fact_adverse_events": {
+    "bigquery": 3000,
+    "fabric_onelake": 3000,
+    "match": true
+  },
+  "dim_drug": {
+    "bigquery": 562,
+    "fabric_onelake": 562,
+    "match": true
+  },
+  "dim_reaction": {
+    "bigquery": 1828,
+    "fabric_onelake": 1828,
+    "match": true
+  },
+  "mart_drug_safety_kpis": {
+    "bigquery": 562,
+    "fabric_dax": 562,
+    "match": true
+  }
+}

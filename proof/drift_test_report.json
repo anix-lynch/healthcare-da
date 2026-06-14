@@ -1,0 +1,27 @@
+{
+  "contract_version": "1.0.0",
+  "required_fields": [
+    "drug_name",
+    "reaction_pt",
+    "receivedate",
+    "safetyreportid"
+  ],
+  "results": [
+    {
+      "scenario": "PASS \u2014 unchanged schema",
+      "verdict": "PASS",
+      "reason": "schema matches contract exactly"
+    },
+    {
+      "scenario": "WARN \u2014 upstream adds a column",
+      "verdict": "WARN",
+      "reason": "additive field(s): ['reporter_qualification'] \u2014 non-breaking, logged"
+    },
+    {
+      "scenario": "FAIL \u2014 upstream drops drug_name",
+      "verdict": "FAIL",
+      "reason": "required field(s) removed: ['drug_name'] \u2014 breaking change blocked"
+    }
+  ],
+  "all_outcomes_demonstrated": true
+}

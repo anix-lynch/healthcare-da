@@ -1,0 +1,9 @@
+{
+  "trigger": {
+    "scenario": "FAIL \u2014 upstream drops drug_name",
+    "verdict": "FAIL",
+    "reason": "required field(s) removed: ['drug_name'] \u2014 breaking change blocked"
+  },
+  "model": "vertex/gemini-2.5-flash",
+  "llm_explanation": "Our data pipeline build was blocked because a critical field, 'drug_name', was removed from an upstream data source. This was caught by our schema-drift gate, preventing corrupted data from reaching your dashboards. We are coordinating with the upstream team to restore the 'drug_name' field to their data."
+}

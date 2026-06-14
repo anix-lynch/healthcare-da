@@ -1,32 +1,64 @@
 # Healthcare Analytics on Microsoft Fabric — openFDA
 
-> **openFDA drug-safety analytics on Microsoft Fabric — built code-first, no GUI.**
-> Real openFDA FAERS reports land in OneLake as Delta, a Direct Lake semantic model and a
-> Power BI report are deployed through the Fabric REST API, DAX runs sub-1.3s, and counts +
-> business metrics reconcile against the GCP BigQuery source. The whole BI lane is agent-drivable.
+> **AI-native Analytics Engineer** · openFDA drug-safety analytics on Microsoft Fabric, built code-first (no GUI).
+> Real openFDA FAERS reports land in OneLake as Delta, a Direct Lake semantic model and a Power BI
+> report are deployed through the Fabric REST API, DAX runs sub-1.3s, and counts + business metrics
+> reconcile against the GCP BigQuery source. The whole BI lane is agent-drivable.
 
-## Repo Map
-```
-healthcare-openfda-fabric/
-├── pipeline/    openFDA → OneLake (Delta) → Direct Lake semantic model → Power BI report → DAX bench
-├── contracts/   the shared openFDA fact contract (same one GCP + AWS use)
-├── proofs/      DAX latency receipt + GCP↔Fabric reconciliation receipt
-├── visuals/     openFDA chart (from the DAX data) + star schema + executive KPI
-├── tests/       contract shape + DAX<5s + reconcile checks (pytest)
-├── README.md    you are here
-└── LICENSE
-```
+![Lineage](images/01_lineage_map.png)
 
 ## What it proves
-- **Power BI ships from code** — semantic model + report (`openFDA Drug Safety Report`, id `ef468dc5`) deploy via the Fabric Items API, not manual clicking (`pipeline/openfda_fabric_pipeline.py`).
-- **Sub-second answers** — real DAX through the Power BI engine: drug leaderboard p50 1.15s, KPI card p50 0.66s, all < 5s (`proofs/powerbi_dax_latency.json`).
-- **Fabric can't quietly change the truth** — fact + dims + mart counts reconcile GCP ↔ Fabric (`proofs/reconciliation_gcp_vs_fabric.json`).
+- **The BI lane ships from code** — semantic model + report (`openFDA Drug Safety Report`, id `ef468dc5`)
+  deploy via the Fabric Items API, not manual clicking. The deployed definitions are committed in [`model/`](model/).
+- **Sub-second answers** — real DAX through the Power BI engine: warm p50 ~0.5s, all < 1.3s
+  ([`proof/powerbi_dax_latency.json`](proof/powerbi_dax_latency.json)).
+- **Trusted data, not vibes** — null drug-name 14.4% → 0.0% under a versioned contract, schema-drift
+  PASS/WARN/FAIL, every number traced through [`proof/lineage.json`](proof/lineage.json).
+- **Portable metric layer** — fact + dims + mart counts reconcile GCP ↔ Fabric
+  ([`proof/reconciliation_gcp_vs_fabric.json`](proof/reconciliation_gcp_vs_fabric.json)).
+
+## Numbers (N = 3,000 reports)
+| metric | value |
+|---|---|
+| adverse-event reports | **3,000** (6 monthly partitions × 500) |
+| serious rate (event-weighted) | **51.3%** |
+| unique drugs | 562 |
+| reporting countries | 44 |
+| distinct reactions | 1,828 |
+
+![Executive KPIs](images/05_executive_kpi.png)
+![Star schema](images/03_star_erd.png)
+
+## Repo map
+```
+healthcare-da/
+├── pipeline/    openFDA → BigQuery → OneLake → semantic model → report → DAX bench → visuals
+│   ├── build_openfda_marts.py   openFDA FAERS → BigQuery marts (event-grain contract shape)
+│   ├── ingest_to_onelake.py     BigQuery marts → OneLake Delta (Direct Lake source)
+│   ├── build_semantic_model.py  Direct Lake semantic model via Fabric Items API
+│   ├── deploy_report.py         Power BI report (cards + bar) via Fabric Items API
+│   ├── benchmark_dax.py         DAX latency via executeQueries (delegated token)
+│   └── build_visuals.py         agent-made diagrams/charts (matplotlib)
+├── model/       the DEPLOYED semantic model (TMDL) + report (PBIR) — committed source of truth
+├── contracts/   openFDA fact contract + semantic contract (governed measure definitions)
+├── proof/       lineage · DAX latency · GCP↔Fabric reconcile · quality · schema-drift receipts
+├── images/      agent-made diagrams (lineage · quality gates · star ERD · serving · KPIs)
+├── tests/       contract shape + DAX<1.3s + reconcile checks (pytest)
+└── README.md
+```
 
 ## Run
-Fill `WS` / `SQL_ENDPOINT` from your Fabric workspace, then drive `pipeline/openfda_fabric_pipeline.py`
-(`ingest_to_onelake → create_directlake_model → create_powerbi_report → benchmark_dax`). Needs an
-interactive owner `az login` (three token audiences: storage.azure.com · api.fabric.microsoft.com · powerbi).
+```bash
+az login --use-device-code              # delegated token (executeQueries needs a user, not an SP)
+python pipeline/build_openfda_marts.py  # openFDA → BigQuery
+python pipeline/ingest_to_onelake.py    # BigQuery → OneLake Delta
+python pipeline/benchmark_dax.py        # DAX latency → proof/
+python pipeline/build_visuals.py        # diagrams → images/
+```
 
-## Honest scope
-n=300 real openFDA reports. `ExportToFile` (report → PNG via API) is capped on the free FTL trial, so the
-rendered screenshot needs a logged-in browser; `visuals/openfda_drug_safety_chart.png` is from the same DAX data.
+## Honesty notes
+- Quality gates are **PySpark / notebook-driven**, not Great Expectations.
+- The figures in `images/` are **agent-made diagrams** (matplotlib), not Power BI screenshots; the
+  Power BI report itself is the deployed `ef468dc5` (visuals in `model/report/`).
+- openFDA is real public FAERS data; serious rate is **event-weighted** (51.3%), not a small-n per-drug average.
+- Star schema / dbt / Great Expectations as a *platform* are credited to the sibling `healthcare-ai-data-engineer` (GCP) repo.

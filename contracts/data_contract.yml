@@ -1,0 +1,46 @@
+# Versioned data contract — openFDA drug adverse-event silver layer.
+# The contract is the agreement every downstream number rides on. Schema or
+# null-rate violations fail the build (PASS/WARN/FAIL), not a hand-cleaned export.
+contract_version: "1.0.0"
+source: "openFDA drug/event"
+grain: "one row per (safetyreportid, drug)"
+
+fields:
+  safetyreportid:
+    type: string
+    required: true
+    unique: true            # primary key — no dups, no nulls
+    on_violation: FAIL
+
+  receivedate:
+    type: date              # YYYYMMDD
+    required: true
+    on_violation: FAIL
+
+  drug_name:                # canonical = coalesce(openfda.generic_name, medicinalproduct)
+    type: string
+    required: true
+    max_null_pct: 1.0       # post-coalesce target; raw generic_name runs ~14% null
+    on_violation: FAIL
+
+  occurcountry:
+    type: string
+    required: false
+    max_null_pct: 5.0       # raw ~1.9% null — tolerated, not blocking
+    on_violation: WARN
+
+  serious:
+    type: string            # "1" serious / "2" non-serious
+    required: false
+    max_null_pct: 5.0
+    on_violation: WARN
+
+  reaction_pt:              # patient.reaction[].reactionmeddrapt
+    type: string
+    required: true
+    max_null_pct: 2.0
+    on_violation: FAIL
+
+quarantine:
+  # rows failing a FAIL-level rule are routed here, never silently dropped
+  path: "data/openfda/quarantine/"

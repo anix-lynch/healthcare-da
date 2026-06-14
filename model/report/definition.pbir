@@ -1,0 +1,9 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definitionProperties/2.0.0/schema.json",
+  "version": "4.0",
+  "datasetReference": {
+    "byConnection": {
+      "connectionString": "Data Source=powerbi://api.powerbi.com/v1.0/myorg/HealthcareAnalytics;initial catalog=\"openFDA Drug Safety\";integrated security=ClaimsToken;semanticmodelid=c11d0c74-1fa3-4d45-b7cc-2ea8a1243df0"
+    }
+  }
+}

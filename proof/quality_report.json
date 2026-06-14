@@ -1,0 +1,15 @@
+{
+  "contract_version": "1.0.0",
+  "source": "openFDA drug/event",
+  "events_in": 3000,
+  "drug_rows_in": 11523,
+  "drug_name_null_pct": {
+    "before_coalesce": 14.4,
+    "after_coalesce": 0.0
+  },
+  "occurcountry_null_pct": 1.4,
+  "serious_null_pct": 1.7,
+  "rows_passed": 11523,
+  "rows_quarantined": 0,
+  "contract_pass_pct": 100.0
+}
