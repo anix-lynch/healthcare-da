@@ -103,8 +103,17 @@ def transform(events: list[dict]):
             "last_report_date": max(dates) if dates else None,
             "reporting_window_days": window,
         })
-    return {"fact_adverse_events": fact, "dim_drug": dim_drug,
-            "dim_reaction": dim_reaction, "mart_drug_safety_kpis": mart}
+    # conformed dims + a reaction bridge (many-to-many done right) — the full star
+    dim_date = [{"date_key": d, "date": d, "year": int(d[:4]), "month": int(d[5:7])}
+                for d in sorted({f["received_date"] for f in fact if f["received_date"]})]
+    dim_country = [{"country_key": c, "country": c}
+                   for c in sorted({f["occurcountry"] for f in fact if f["occurcountry"]})]
+    bridge = [{"safetyreportid": f["safetyreportid"], "reaction_id": md5(r)}
+              for f in fact for r in set(f["reactions"].split(";")) if r]
+
+    return {"fact_adverse_events": fact, "dim_drug": dim_drug, "dim_reaction": dim_reaction,
+            "dim_date": dim_date, "dim_country": dim_country,
+            "bridge_report_reaction": bridge, "mart_drug_safety_kpis": mart}
 
 
 def load_bq(table: str, rows: list[dict]):

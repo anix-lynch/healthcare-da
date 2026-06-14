@@ -246,6 +246,33 @@
             }
           }
         ]
+      },
+      {
+        "name": "bridge_report_reaction",
+        "columns": [
+          {
+            "name": "safetyreportid",
+            "dataType": "string",
+            "sourceColumn": "safetyreportid"
+          },
+          {
+            "name": "reaction_id",
+            "dataType": "string",
+            "sourceColumn": "reaction_id"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "bridge_report_reaction",
+            "mode": "directLake",
+            "source": {
+              "type": "entity",
+              "entityName": "bridge_report_reaction",
+              "expressionSource": "DatabaseQuery",
+              "schemaName": "dbo"
+            }
+          }
+        ]
       }
     ],
     "relationships": [
@@ -271,6 +298,30 @@
         "fromColumn": "occurcountry",
         "toTable": "dim_country",
         "toColumn": "country_key",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "fact_to_bridge",
+        "fromTable": "bridge_report_reaction",
+        "fromColumn": "safetyreportid",
+        "toTable": "fact_adverse_events",
+        "toColumn": "safetyreportid",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "bridge_to_dim_reaction",
+        "fromTable": "bridge_report_reaction",
+        "fromColumn": "reaction_id",
+        "toTable": "dim_reaction",
+        "toColumn": "reaction_id",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "mart_to_dim_drug",
+        "fromTable": "mart_drug_safety_kpis",
+        "fromColumn": "primary_drug",
+        "toTable": "dim_drug",
+        "toColumn": "drug_name",
         "crossFilteringBehavior": "oneDirection"
       }
     ]
