@@ -1,0 +1,63 @@
+{
+  "_doc": "End-to-end data lineage for the openFDA -> Microsoft Fabric analytics pipeline. Every KPI on the report traces back through this chain to the openFDA source, with the governing gate/artifact named at each hop. Grounding proof for Resume A bullet 5.",
+  "contract_version": "1.0.0",
+  "chain": [
+    {
+      "stage": "source",
+      "node": "openFDA drug/event API",
+      "kind": "external source",
+      "artifact": "pipeline/openfda_fabric_pipeline.py (ingest)",
+      "produces": "raw adverse-event reports"
+    },
+    {
+      "stage": "bronze",
+      "node": "OneLake Delta (bronze)",
+      "kind": "lakehouse landing",
+      "from": "source",
+      "edge": "Data Factory ingest -> OneLake Delta",
+      "artifact": "pipeline/openfda_fabric_pipeline.py"
+    },
+    {
+      "stage": "silver",
+      "node": "fact_adverse_events (silver)",
+      "kind": "quality-gated fact",
+      "from": "bronze",
+      "edge": "PySpark quality gate + versioned data contract (coalesce, null/dup/date checks, FAIL->quarantine)",
+      "gate_artifacts": [
+        "contracts/openfda_fact_contract_v1.0.0.json",
+        "TRUST/quality_report.json (null 14.4%->0%, contract_pass 100%)",
+        "TRUST/drift_test_report.json (schema-drift PASS/WARN/FAIL)"
+      ],
+      "grain": "safetyreportid"
+    },
+    {
+      "stage": "gold",
+      "node": "mart_drug_safety_kpis + dims",
+      "kind": "governed marts (star schema)",
+      "from": "silver",
+      "edge": "medallion silver->gold modeling (fact + dim_drug/date/country/reaction/seriousness, PK/FK)",
+      "reconcile_artifact": "proofs/reconciliation_gcp_vs_fabric.json (GCP==Fabric, all match)"
+    },
+    {
+      "stage": "semantic_model",
+      "node": "Direct Lake semantic model 'openFDA Drug Safety'",
+      "id": "c11d0c74",
+      "kind": "semantic layer",
+      "from": "gold",
+      "edge": "Fabric Items API deploy (model.bim inline, no GUI/XMLA)",
+      "measures": ["Total Reports", "Avg Serious Rate"],
+      "latency_artifact": "proofs/powerbi_dax_latency.json (DAX p50 0.66-1.15s)"
+    },
+    {
+      "stage": "report",
+      "node": "Power BI report 'openFDA Drug Safety Report'",
+      "id": "ef468dc5",
+      "kind": "serving surface",
+      "from": "semantic_model",
+      "edge": "Fabric Items API report deploy (byConnection), bound to dataset c11d0c74",
+      "visuals": ["Total Reports (card)", "Avg Serious Rate (card)", "Drug Leaderboard (bar)"]
+    }
+  ],
+  "grounding_claim": "Every number a human or AI agent reads on the report resolves back through report -> semantic model -> gold mart -> silver fact -> bronze -> openFDA source, with a committed gate artifact at each hop. No number is ungrounded.",
+  "consumers": ["Power BI report (BI/exec)", "AI agents (semantic-model queries)", "ad-hoc SQL (Fabric Warehouse)"]
+}
