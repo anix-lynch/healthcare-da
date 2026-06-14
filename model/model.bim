@@ -1,7 +1,6 @@
 {
   "name": "openFDA Drug Safety",
   "compatibilityLevel": 1604,
-  "_doc": "Direct Lake semantic model over the openFDA gold tables in the HealthcareAnalytics Lakehouse. The report (ef468dc5) binds to mart_drug_safety_kpis + its measures; fact_adverse_events + dim_drug + dim_reaction form the conformed star with an enforced relationship. Deployed via the Fabric Items API (pipeline/build_semantic_model.py), not the GUI. N = 3,000 reports.",
   "model": {
     "culture": "en-US",
     "defaultPowerBIDataSourceVersion": "powerBI_V3",

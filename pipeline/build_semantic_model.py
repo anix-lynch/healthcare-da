@@ -36,7 +36,7 @@ def sql_endpoint(fab: str) -> str:
 def deploy() -> int:
     fab = tok("https://api.fabric.microsoft.com/")
     bim = json.loads(BIM.read_text())
-    server = sql_endpoint(fab) or "<sqlendpoint>.datawarehouse.fabric.microsoft.com"
+    server = sql_endpoint(fab) or "ndcddt2bpc6elclhiudkopyo5m-h7sh2v5uegpepgnw5j4pglsscy.datawarehouse.fabric.microsoft.com"
     bim["model"]["expressions"][0]["expression"] = (
         f'let database = Sql.Database("{server}", "HealthcareAnalytics") in database')
     b64 = lambda s: base64.b64encode(s.encode()).decode()

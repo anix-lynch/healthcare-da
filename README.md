@@ -29,6 +29,9 @@
 | reporting countries | 44 |
 | distinct reactions | 1,828 |
 
+![Power BI report (live)](images/powerbi_live.png)
+*the deployed `openFDA Drug Safety` report — real Power BI, code-deployed via the Fabric Items API*
+
 ![Executive KPIs](images/05_executive_kpi.png)
 ![Star schema](images/03_star_erd.png)
 
@@ -65,8 +68,8 @@ python pipeline/build_visuals.py        # diagrams → images/
 - The figures in `images/` are **agent-made diagrams** (matplotlib), not Power BI screenshots; the
   Power BI report itself is the deployed `ef468dc5` (definition in `model/report.pbir`). `demo.gif` is
   an agent-made panel walkthrough, not a screen-capture.
-- `model/model.bim` is the committed semantic-model definition (full star). The live Direct Lake model
-  serves `mart_drug_safety_kpis` (562 rows, what the report binds to); the fact/dim tables resolve as the
-  Lakehouse SQL endpoint exposes them.
+- `model/model.bim` is the committed semantic-model definition and the **live deployed** model: the full
+  star (mart + fact_adverse_events + dim_drug + dim_reaction + the `fact → dim_drug` relationship) resolves
+  in Direct Lake — verified by a cross-table DAX query (top drugs via `dim_drug` × the fact `Reports` measure).
 - openFDA is real public FAERS data; serious rate is **event-weighted** (51.3%), not a small-n per-drug average.
 - Star schema / dbt / Great Expectations as a *platform* are credited to the sibling `healthcare-ai-data-engineer` (GCP) repo.
