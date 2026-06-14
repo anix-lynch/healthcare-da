@@ -3,7 +3,7 @@
 Benchmark DAX through the Power BI engine — the real "Power BI query", no GUI.
 
 Runs DAX against the deployed openFDA Direct Lake model via the executeQueries REST API and
-records latency to ../proof/powerbi_dax_latency.json. executeQueries needs a DELEGATED (user)
+records latency to ../proof/dax_latency.json. executeQueries needs a DELEGATED (user)
 token — app-only service-principal tokens get 401 (see /azure-auth-hell skill). N=3,000.
 
 Auth: analysis.windows.net/powerbi/api token (delegated). Run: python pipeline/benchmark_dax.py
@@ -16,7 +16,7 @@ from pathlib import Path
 
 WS = "577de43f-21b4-479e-99b6-ea78f32e5216"
 MODEL = "c11d0c74-1fa3-4d45-b7cc-2ea8a1243df0"
-OUT = Path(__file__).resolve().parents[1] / "proof" / "powerbi_dax_latency.json"
+OUT = Path(__file__).resolve().parents[1] / "proof" / "dax_latency.json"
 QUERIES = {
     "kpi_card": 'EVALUATE ROW("total", COUNTROWS(mart_drug_safety_kpis), '
                 '"serious", AVERAGE(mart_drug_safety_kpis[serious_rate]))',

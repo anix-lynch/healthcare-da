@@ -5,17 +5,20 @@
 > report are deployed through the Fabric REST API, DAX runs sub-1.3s, and counts + business metrics
 > reconcile against the GCP BigQuery source. The whole BI lane is agent-drivable.
 
+![agent-made walkthrough](demo.gif)
+*agent-made walkthrough (matplotlib panels) — not a live Power BI screen-capture*
+
 ![Lineage](images/01_lineage_map.png)
 
 ## What it proves
 - **The BI lane ships from code** — semantic model + report (`openFDA Drug Safety Report`, id `ef468dc5`)
   deploy via the Fabric Items API, not manual clicking. The deployed definitions are committed in [`model/`](model/).
 - **Sub-second answers** — real DAX through the Power BI engine: warm p50 ~0.5s, all < 1.3s
-  ([`proof/powerbi_dax_latency.json`](proof/powerbi_dax_latency.json)).
+  ([`proof/dax_latency.json`](proof/dax_latency.json)).
 - **Trusted data, not vibes** — null drug-name 14.4% → 0.0% under a versioned contract, schema-drift
   PASS/WARN/FAIL, every number traced through [`proof/lineage.json`](proof/lineage.json).
 - **Portable metric layer** — fact + dims + mart counts reconcile GCP ↔ Fabric
-  ([`proof/reconciliation_gcp_vs_fabric.json`](proof/reconciliation_gcp_vs_fabric.json)).
+  ([`proof/reconcile_gcp_fabric.json`](proof/reconcile_gcp_fabric.json)).
 
 ## Numbers (N = 3,000 reports)
 | metric | value |
@@ -32,6 +35,7 @@
 ## Repo map
 ```
 healthcare-da/
+├── demo.gif     agent-made walkthrough (panels of the hero diagrams)
 ├── pipeline/    openFDA → BigQuery → OneLake → semantic model → report → DAX bench → visuals
 │   ├── build_openfda_marts.py   openFDA FAERS → BigQuery marts (event-grain contract shape)
 │   ├── ingest_to_onelake.py     BigQuery marts → OneLake Delta (Direct Lake source)
@@ -39,7 +43,7 @@ healthcare-da/
 │   ├── deploy_report.py         Power BI report (cards + bar) via Fabric Items API
 │   ├── benchmark_dax.py         DAX latency via executeQueries (delegated token)
 │   └── build_visuals.py         agent-made diagrams/charts (matplotlib)
-├── model/       the DEPLOYED semantic model (TMDL) + report (PBIR) — committed source of truth
+├── model/       model.bim (semantic model: fact + dims + relationship + measures) + report.pbir — committed source of truth
 ├── contracts/   openFDA fact contract + semantic contract (governed measure definitions)
 ├── proof/       lineage · DAX latency · GCP↔Fabric reconcile · quality · schema-drift receipts
 ├── images/      agent-made diagrams (lineage · quality gates · star ERD · serving · KPIs)
@@ -59,6 +63,10 @@ python pipeline/build_visuals.py        # diagrams → images/
 ## Honesty notes
 - Quality gates are **PySpark / notebook-driven**, not Great Expectations.
 - The figures in `images/` are **agent-made diagrams** (matplotlib), not Power BI screenshots; the
-  Power BI report itself is the deployed `ef468dc5` (visuals in `model/report/`).
+  Power BI report itself is the deployed `ef468dc5` (definition in `model/report.pbir`). `demo.gif` is
+  an agent-made panel walkthrough, not a screen-capture.
+- `model/model.bim` is the committed semantic-model definition (full star). The live Direct Lake model
+  serves `mart_drug_safety_kpis` (562 rows, what the report binds to); the fact/dim tables resolve as the
+  Lakehouse SQL endpoint exposes them.
 - openFDA is real public FAERS data; serious rate is **event-weighted** (51.3%), not a small-n per-drug average.
 - Star schema / dbt / Great Expectations as a *platform* are credited to the sibling `healthcare-ai-data-engineer` (GCP) repo.

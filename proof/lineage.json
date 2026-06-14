@@ -24,7 +24,7 @@
       "from": "bronze",
       "edge": "PySpark quality gate + versioned data contract (coalesce, null/dup/date checks, FAIL->quarantine)",
       "gate_artifacts": [
-        "contracts/openfda_fact_contract_v1.0.0.json",
+        "contracts/openfda_fact_contract.json",
         "proof/quality_report.json (null 14.4%->0%, contract_pass 100%)",
         "proof/drift_test_report.json (schema-drift PASS/WARN/FAIL)"
       ],
@@ -36,7 +36,7 @@
       "kind": "governed marts (star schema)",
       "from": "silver",
       "edge": "medallion silver->gold modeling (fact + dim_drug/date/country/reaction/seriousness, PK/FK)",
-      "reconcile_artifact": "proof/reconciliation_gcp_vs_fabric.json (GCP==Fabric, all match)"
+      "reconcile_artifact": "proof/reconcile_gcp_fabric.json (GCP==Fabric, all match)"
     },
     {
       "stage": "semantic_model",
@@ -46,7 +46,7 @@
       "from": "gold",
       "edge": "Fabric Items API deploy (model.bim inline, no GUI/XMLA)",
       "measures": ["Total Reports", "Avg Serious Rate"],
-      "latency_artifact": "proof/powerbi_dax_latency.json (DAX p50 0.66-1.15s)"
+      "latency_artifact": "proof/dax_latency.json (DAX p50 0.66-1.15s)"
     },
     {
       "stage": "report",

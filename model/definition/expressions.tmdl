@@ -1,6 +1,0 @@
-expression DatabaseQuery =
-		let
-		    database = Sql.Database("ndcddt2bpc6elclhiudkopyo5m-h7sh2v5uegpepgnw5j4pglsscy.datawarehouse.fabric.microsoft.com", "HealthcareAnalytics")
-		in
-		    database
-

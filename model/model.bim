@@ -1,0 +1,89 @@
+{
+  "name": "openFDA Drug Safety",
+  "compatibilityLevel": 1604,
+  "_doc": "Direct Lake semantic model over the openFDA gold tables in the HealthcareAnalytics Lakehouse. The report (ef468dc5) binds to mart_drug_safety_kpis + its measures; fact_adverse_events + dim_drug + dim_reaction form the conformed star with an enforced relationship. Deployed via the Fabric Items API (pipeline/build_semantic_model.py), not the GUI. N = 3,000 reports.",
+  "model": {
+    "culture": "en-US",
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "expressions": [
+      {
+        "name": "DatabaseQuery",
+        "kind": "m",
+        "expression": "let database = Sql.Database(\"<sqlendpoint>.datawarehouse.fabric.microsoft.com\", \"HealthcareAnalytics\") in database"
+      }
+    ],
+    "tables": [
+      {
+        "name": "mart_drug_safety_kpis",
+        "columns": [
+          {"name": "primary_drug", "dataType": "string", "sourceColumn": "primary_drug"},
+          {"name": "total_reports", "dataType": "int64", "sourceColumn": "total_reports"},
+          {"name": "serious_rate", "dataType": "double", "sourceColumn": "serious_rate"},
+          {"name": "distinct_reactions", "dataType": "int64", "sourceColumn": "distinct_reactions"}
+        ],
+        "measures": [
+          {"name": "Total Reports", "expression": "SUM(mart_drug_safety_kpis[total_reports])"},
+          {"name": "Avg Serious Rate", "expression": "AVERAGE(mart_drug_safety_kpis[serious_rate])"}
+        ],
+        "partitions": [
+          {"name": "mart_drug_safety_kpis", "mode": "directLake",
+           "source": {"type": "entity", "entityName": "mart_drug_safety_kpis", "expressionSource": "DatabaseQuery", "schemaName": "dbo"}}
+        ]
+      },
+      {
+        "name": "fact_adverse_events",
+        "columns": [
+          {"name": "safetyreportid", "dataType": "string", "sourceColumn": "safetyreportid"},
+          {"name": "received_date", "dataType": "string", "sourceColumn": "received_date"},
+          {"name": "primary_drug", "dataType": "string", "sourceColumn": "primary_drug"},
+          {"name": "is_serious", "dataType": "boolean", "sourceColumn": "is_serious"},
+          {"name": "n_drugs", "dataType": "int64", "sourceColumn": "n_drugs"},
+          {"name": "n_reactions", "dataType": "int64", "sourceColumn": "n_reactions"},
+          {"name": "occurcountry", "dataType": "string", "sourceColumn": "occurcountry"}
+        ],
+        "measures": [
+          {"name": "Reports", "expression": "COUNTROWS(fact_adverse_events)"},
+          {"name": "Serious Rate (event-weighted)", "expression": "DIVIDE(CALCULATE(COUNTROWS(fact_adverse_events), fact_adverse_events[is_serious] = TRUE()), COUNTROWS(fact_adverse_events))"},
+          {"name": "Unique Drugs", "expression": "DISTINCTCOUNT(fact_adverse_events[primary_drug])"},
+          {"name": "Reporting Countries", "expression": "DISTINCTCOUNT(fact_adverse_events[occurcountry])"}
+        ],
+        "partitions": [
+          {"name": "fact_adverse_events", "mode": "directLake",
+           "source": {"type": "entity", "entityName": "fact_adverse_events", "expressionSource": "DatabaseQuery", "schemaName": "dbo"}}
+        ]
+      },
+      {
+        "name": "dim_drug",
+        "columns": [
+          {"name": "drug_id", "dataType": "string", "sourceColumn": "drug_id"},
+          {"name": "drug_name", "dataType": "string", "sourceColumn": "drug_name"}
+        ],
+        "partitions": [
+          {"name": "dim_drug", "mode": "directLake",
+           "source": {"type": "entity", "entityName": "dim_drug", "expressionSource": "DatabaseQuery", "schemaName": "dbo"}}
+        ]
+      },
+      {
+        "name": "dim_reaction",
+        "columns": [
+          {"name": "reaction_id", "dataType": "string", "sourceColumn": "reaction_id"},
+          {"name": "reaction_name", "dataType": "string", "sourceColumn": "reaction_name"}
+        ],
+        "partitions": [
+          {"name": "dim_reaction", "mode": "directLake",
+           "source": {"type": "entity", "entityName": "dim_reaction", "expressionSource": "DatabaseQuery", "schemaName": "dbo"}}
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "fact_to_dim_drug",
+        "fromTable": "fact_adverse_events",
+        "fromColumn": "primary_drug",
+        "toTable": "dim_drug",
+        "toColumn": "drug_name",
+        "crossFilteringBehavior": "oneDirection"
+      }
+    ]
+  }
+}
