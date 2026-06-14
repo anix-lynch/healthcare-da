@@ -35,6 +35,20 @@
 ![Executive KPIs](images/05_executive_kpi.png)
 ![Star schema](images/03_star_erd.png)
 
+## The mess it conquers (raw openFDA → trusted)
+Real FAERS data is not a clean table — that's the point. Profiled from 3,000 raw reports
+([`proof/messiness_report.json`](proof/messiness_report.json)):
+
+| what arrives (the mess) | why it's hard | what the trust layer does |
+|---|---|---|
+| nested JSON, **6 levels deep** | not flat rows | parse → event-grain `fact_adverse_events` |
+| **14.4%** null drug names | naive join drops them | `coalesce(generic_name → medicinalproduct)` → **0%** |
+| reactions **1–185 per report** (list-valued) | breaks a flat star | explode into `bridge_report_reaction` (8,232 links) → M2M done right |
+| 1.9% missing country · 27-field ragged schema | no fixed shape | nullable dims + versioned contract PASS/WARN/FAIL → quarantine, never silent-drop |
+
+→ 11,523 records, **100% contract-validation pass, 0 violations** downstream. However messy it
+arrives, it never contaminates the clean layer.
+
 ## Repo map
 ```
 healthcare-da/

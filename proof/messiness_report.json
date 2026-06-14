@@ -1,0 +1,20 @@
+{
+  "_doc": "What raw openFDA FAERS actually throws at the pipeline — the mess the trust layer (bullet 1) conquers. Profiled from 3,000 raw adverse-event reports BEFORE any cleaning. This is the evidence behind 'no matter how messy the data comes in, it never mixes with the good'.",
+  "n_raw_events": 3000,
+  "the_mess": {
+    "nested_json_depth": {"value": "6 levels", "why_hard": "deeply nested patient/drug/openfda/reaction objects — not flat rows; must be parsed + flattened"},
+    "null_drug_name_pct": {"value": 14.4, "rows": "1654/11523 drug rows", "why_hard": "openfda.generic_name missing on 1 in 7 drugs; a naive join loses them"},
+    "list_valued_reactions": {"value": "1 to 185 reactions per report (avg 2.8)", "why_hard": "non-atomic / multi-valued — breaks a flat star; requires a many-to-many bridge"},
+    "missing_country_pct": {"value": 1.9, "why_hard": "occurcountry absent on 57 reports — nullable dimension key"},
+    "ragged_schema": {"value": "27 top-level fields, 3 present in <90% of records", "why_hard": "sparse/inconsistent fields per record — no fixed shape"}
+  },
+  "what_the_trust_layer_does": {
+    "null_drug_name": "coalesce(openfda.generic_name -> medicinalproduct) -> 14.4% null becomes 0.0%",
+    "list_valued_reactions": "explode into bridge_report_reaction (8,232 links) -> dim_reaction (1,828) — M2M done right, not dropped",
+    "nested_json": "parse to a conformed event-grain fact_adverse_events (grain = safetyreportid)",
+    "missing_country": "nullable handled; dim_country built from present values (44)",
+    "contract_enforcement": "versioned data_contract.yml PASS/WARN/FAIL; FAIL-level rows route to quarantine, never silent-drop",
+    "result": "11,523 records, 100% contract-validation pass, 0 violations downstream"
+  },
+  "claim_backed": "bullet 1 (Data Quality) — 'however messy the data arrives, it never contaminates the clean layer'"
+}
