@@ -49,6 +49,20 @@ Real FAERS data is not a clean table — that's the point. Profiled from 3,000 r
 → 11,523 records, **100% contract-validation pass, 0 violations** downstream. However messy it
 arrives, it never contaminates the clean layer.
 
+## Live in Microsoft Fabric (real screenshots, not diagrams)
+The medallion before/after is a real query, captured live in the Fabric Lakehouse:
+
+| bronze (raw, dirty) | silver (trust layer) |
+|---|---|
+| ![bronze](images/medallion_bronze_dirty.png) | ![silver](images/medallion_silver_clean.png) |
+| `drug_name_raw` **14.4% NULL** as openFDA arrives | `drug_name` **0% NULL** after coalesce |
+
+![star schema](images/03_star_schema.png)
+*conformed star deployed from `model.bim` — fact + 4 dims + a reaction bridge (M2M), relationships enforced*
+
+![DAX](images/dax_query.png) ![report](images/report_total_reports.png)
+*DAX through the relationships (executeQueries) · the deployed Power BI report, N=3,000*
+
 ## Repo map
 ```
 healthcare-da/
