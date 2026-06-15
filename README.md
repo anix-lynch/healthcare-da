@@ -10,6 +10,26 @@
 
 ![Lineage](images/01_lineage_map.png)
 
+## Repo Map
+```
+healthcare-da/
+├── contracts/   ✅ the agreements every number rides on — data_contract.yml (PASS/WARN/FAIL),
+│                   fact schema + retention, semantic_contract
+├── data/        ✅ medallion JSONL — bronze (dirty) → silver (clean) → quarantine lane
+├── model/       ✅ Direct Lake semantic model deployed from code (model.bim) + Power BI report
+├── pipeline/    ✅ 11 scripts: medallion build, semantic + report deploy, DAX bench
+│   ├── run_contract_gate.py       ✅ live trust gate: validate → quarantine → anomaly → log
+│   ├── vertex_preflight.py        ✅ serve-side: reuse the contract, refuse bad data to the LLM
+│   ├── apply_governance.py        ✅ RBAC + row-level security as code → model.bim
+│   └── semantic_complexity_bench.py ✅ measures 3.8× fewer query tokens vs raw SQL
+├── security/    ✅ governance_policy.yml — RBAC/RLS/retention single source of truth
+├── proof/       🟡 code-generated receipts (quality, governance, lineage, latency, reconcile)
+├── tests/       ✅ pytest — 10 tests (contract, gate, quarantine, semantic, governance, preflight)
+├── images/      🖼️ Fabric + Power BI screenshots
+├── .github/     ✅ CI: gate → preflight → bench → governance → tests (+ daily cron)
+└── README.md    📖 you are here
+```
+
 ## What it proves
 - **The BI lane ships from code** — semantic model + report (`openFDA Drug Safety Report`, id `ef468dc5`)
   deploy via the Fabric Items API, not manual clicking. The deployed definitions are committed in [`model/`](model/).

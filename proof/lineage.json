@@ -6,7 +6,7 @@
       "stage": "source",
       "node": "openFDA drug/event API",
       "kind": "external source",
-      "artifact": "pipeline/openfda_fabric_pipeline.py (ingest)",
+      "artifact": "pipeline/build_medallion.py + ingest_to_onelake.py (ingest)",
       "produces": "raw adverse-event reports"
     },
     {
@@ -15,7 +15,7 @@
       "kind": "lakehouse landing",
       "from": "source",
       "edge": "Data Factory ingest -> OneLake Delta",
-      "artifact": "pipeline/openfda_fabric_pipeline.py"
+      "artifact": "pipeline/build_medallion.py"
     },
     {
       "stage": "silver",
@@ -45,8 +45,11 @@
       "kind": "semantic layer",
       "from": "gold",
       "edge": "Fabric Items API deploy (model.bim inline, no GUI/XMLA)",
-      "measures": ["Total Reports", "Avg Serious Rate"],
-      "latency_artifact": "proof/dax_latency.json (DAX p50 0.66-1.15s)"
+      "measures": [
+        "Total Reports",
+        "Avg Serious Rate"
+      ],
+      "latency_artifact": "proof/dax_latency.json (DAX p50 ~0.5s, all <1.3s)"
     },
     {
       "stage": "report",
@@ -55,9 +58,17 @@
       "kind": "serving surface",
       "from": "semantic_model",
       "edge": "Fabric Items API report deploy (byConnection), bound to dataset c11d0c74",
-      "visuals": ["Total Reports (card)", "Avg Serious Rate (card)", "Drug Leaderboard (bar)"]
+      "visuals": [
+        "Total Reports (card)",
+        "Avg Serious Rate (card)",
+        "Drug Leaderboard (bar)"
+      ]
     }
   ],
   "grounding_claim": "Every number a human or AI agent reads on the report resolves back through report -> semantic model -> gold mart -> silver fact -> bronze -> openFDA source, with a committed gate artifact at each hop. No number is ungrounded.",
-  "consumers": ["Power BI report (BI/exec)", "AI agents (semantic-model queries)", "ad-hoc SQL (Fabric Warehouse)"]
+  "consumers": [
+    "Power BI report (BI/exec)",
+    "AI agents (semantic-model queries)",
+    "ad-hoc SQL (Fabric Warehouse)"
+  ]
 }
