@@ -89,6 +89,19 @@ def test_semantic_complexity_proof():
     assert r["median_token_reduction_x"] >= 2.0, "median token reduction must be >=2x"
 
 
+def test_governance_as_code():
+    """RBAC roles + RLS must be enforced in the model, and retention must match the contract."""
+    g = json.load(open(ROOT / "proof/governance.json"))
+    assert len(g["rbac_roles"]) >= 3, "expected >=3 RBAC roles"
+    assert g["rls_enforced_roles"], "at least one role must carry a row-level-security filter"
+    assert g["rls_in_model_bim"] is True, "RLS filters must actually be written into model.bim"
+    assert g["retention_days_contract_matches_policy"] is True, "policy retention must match contract"
+    m = json.load(open(ROOT / "model/model.bim"))
+    mdl = m.get("model", m)
+    roles = mdl.get("roles", [])
+    assert any(r.get("tablePermissions") for r in roles), "model.bim must contain an RLS filterExpression"
+
+
 def test_vertex_preflight_allows_clean_blocks_dirty():
     """The Vertex-side preflight reuses the contract: clean data serves, dirty data is refused."""
     import sys

@@ -394,6 +394,28 @@
         "toColumn": "drug_name",
         "crossFilteringBehavior": "oneDirection"
       }
+    ],
+    "roles": [
+      {
+        "name": "admin",
+        "modelPermission": "read",
+        "tablePermissions": []
+      },
+      {
+        "name": "analyst",
+        "modelPermission": "read",
+        "tablePermissions": []
+      },
+      {
+        "name": "restricted_analyst",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "fact_adverse_events",
+            "filterExpression": "fact_adverse_events[occurcountry] = \"US\""
+          }
+        ]
+      }
     ]
   }
 }

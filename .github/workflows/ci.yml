@@ -24,5 +24,7 @@ jobs:
         run: python pipeline/vertex_preflight.py
       - name: Semantic complexity benchmark
         run: python pipeline/semantic_complexity_bench.py
+      - name: Apply governance as code (RBAC + RLS + retention)
+        run: python pipeline/apply_governance.py
       - name: Run contract + metric tests
         run: python -m pytest tests/ -q

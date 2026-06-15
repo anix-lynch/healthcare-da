@@ -1,0 +1,23 @@
+{
+  "policy_version": "1.0.0",
+  "generated_by": "pipeline/apply_governance.py",
+  "classification": "public-deidentified",
+  "phi_present": false,
+  "pii_columns": [],
+  "rbac_roles": [
+    "admin",
+    "analyst",
+    "restricted_analyst"
+  ],
+  "rls_enforced_roles": [
+    "restricted_analyst"
+  ],
+  "rls_in_model_bim": true,
+  "least_privilege": "analyst+restricted never read bronze; admin only bronze reader",
+  "retention_days_contract_matches_policy": true,
+  "retention_days": 365,
+  "audit_logs": [
+    "proof/gate_run_log.jsonl",
+    "proof/governance.json"
+  ]
+}

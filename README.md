@@ -26,6 +26,13 @@
   post-gate silver/gold layer — never raw bronze**. Every number is then traced through [`proof/lineage.json`](proof/lineage.json).
 - **Portable metric layer** — fact + dims + mart counts reconcile GCP ↔ Fabric
   ([`proof/reconcile_gcp_fabric.json`](proof/reconcile_gcp_fabric.json)).
+- **Governance as code** — [`security/governance_policy.yml`](security/governance_policy.yml) drives RBAC roles +
+  **row-level security** written into the model ([`pipeline/apply_governance.py`](pipeline/apply_governance.py) →
+  [`proof/governance.json`](proof/governance.json)): least-privilege (analysts never read bronze), an RLS filter on
+  `restricted_analyst`, retention that matches the contract, classified public-deidentified (no PHI).
+- **AI-ready semantic layer** — 5 entities, **9 governed measures**, descriptions + synonyms for NL/LLM Q&A;
+  a named measure is a **measured median 3.8× fewer query tokens** than raw SQL over the star schema
+  ([`proof/semantic_complexity.json`](proof/semantic_complexity.json)).
 
 ## Numbers (N = 3,000 reports)
 | metric | value |
