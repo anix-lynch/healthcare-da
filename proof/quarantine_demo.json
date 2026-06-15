@@ -1,0 +1,18 @@
+{
+  "scenario": "synthetic bad data injected into the gate",
+  "rows_in": 3,
+  "rows_quarantined": 2,
+  "quarantined_examples": [
+    {
+      "safetyreportid": null,
+      "violation_field": "safetyreportid",
+      "violation_reason": "safetyreportid null/invalid (FAIL-level)"
+    },
+    {
+      "safetyreportid": "BAD1",
+      "violation_field": "drug_name",
+      "violation_reason": "drug_name null/invalid (FAIL-level)"
+    }
+  ],
+  "note": "Proves the quarantine lane populates on real violations (production sample is clean -> 0 quarantined)."
+}

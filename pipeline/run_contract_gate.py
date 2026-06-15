@@ -11,6 +11,7 @@ post-gate (silver/gold) layer — never raw bronze.
 
 Run:  python3 pipeline/run_contract_gate.py
 """
+import argparse
 import json
 import sys
 import pathlib
@@ -27,6 +28,7 @@ BASELINE = ROOT / "proof/baseline.json"
 QUALITY_REPORT = ROOT / "proof/quality_report.json"
 TRUST_REDUCTION = ROOT / "proof/trust_issues_reduction.json"
 ANOMALY_REPORT = ROOT / "proof/anomaly_report.json"
+GATE_RUN_LOG = ROOT / "proof/gate_run_log.jsonl"
 
 # contract field name -> the actual column materialized in the silver fact.
 # reaction_pt is modeled in dim_reaction (not the fact grain), so it is reported, not enforced here.
@@ -192,7 +194,22 @@ def anomaly_check(silver):
             "threshold_pct": THRESH, "status": status}
 
 
+def append_run_log(report, anomaly, strict):
+    """Append one line per gate run — a simple, queryable monitoring history (no external tooling)."""
+    entry = {"run_grain": "contract_gate", "overall": report["overall_status"],
+             "rows": report["rows_in"], "quarantined": report["rows_quarantined"],
+             "contract_pass_pct": report["contract_pass_pct"], "anomaly": anomaly["status"],
+             "strict": strict}
+    with open(GATE_RUN_LOG, "a") as fh:
+        fh.write(json.dumps(entry) + "\n")
+
+
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--strict", action="store_true",
+                        help="treat WARN-level anomaly/grain breaches as blocking (SLA mode)")
+    args = parser.parse_args()
+
     contract = yaml.safe_load(open(CONTRACT))
     bronze = load_jsonl(BRONZE)
     silver = load_jsonl(SILVER)
@@ -224,6 +241,7 @@ def main():
     json.dump(report, open(QUALITY_REPORT, "w"), indent=2)
     json.dump(reduction, open(TRUST_REDUCTION, "w"), indent=2)
     json.dump(anomaly, open(ANOMALY_REPORT, "w"), indent=2)
+    append_run_log(report, anomaly, args.strict)
 
     print(f"contract gate: {overall} | rows={len(silver)} quarantined={len(quarantine)} "
           f"pass={report['contract_pass_pct']}%")
@@ -231,8 +249,11 @@ def main():
     print(f"anomaly: {anomaly['status']} (vol drift {anomaly['volume_drift_pct']}%, "
           f"serious-rate drift {anomaly['serious_rate_drift_pct']}%)")
 
-    if overall == "FAIL":
-        print("GATE FAILED — silver/gold/semantic-model build blocked.", file=sys.stderr)
+    # blocking conditions: FAIL always blocks; in --strict (SLA mode) an anomaly WARN also blocks.
+    blocked = overall == "FAIL" or (args.strict and anomaly["status"] == "WARN")
+    if blocked:
+        why = "contract FAIL" if overall == "FAIL" else "anomaly breach (strict SLA)"
+        print(f"GATE BLOCKED ({why}) — silver/gold/semantic-model build halted.", file=sys.stderr)
         sys.exit(1)
 
 

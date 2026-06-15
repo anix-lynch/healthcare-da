@@ -5,6 +5,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: "0 13 * * *"   # daily scheduled gate run — data-trust monitoring heartbeat
 
 jobs:
   test:
@@ -18,5 +20,7 @@ jobs:
         run: pip install pytest pyyaml
       - name: Run live contract gate (blocks on FAIL)
         run: python pipeline/run_contract_gate.py
+      - name: Vertex/LLM serve preflight (reuses the same contract)
+        run: python pipeline/vertex_preflight.py
       - name: Run contract + metric tests
         run: python -m pytest tests/ -q

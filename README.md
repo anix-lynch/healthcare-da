@@ -18,9 +18,12 @@
 - **Trusted data, not vibes** — a **live contract gate** ([`pipeline/run_contract_gate.py`](pipeline/run_contract_gate.py))
   enforces the versioned contract on every run: PASS/WARN/FAIL, **code-generated** [`proof/quality_report.json`](proof/quality_report.json),
   FAIL rows routed to a **quarantine lane**, plus a volume/serious-rate **anomaly check**. Aggregate issue rate
-  **16.1% → 0%** ([`proof/trust_issues_reduction.json`](proof/trust_issues_reduction.json)). Dashboards, the semantic
-  model, and the AI agent read **only the post-gate silver/gold layer — never raw bronze**. Every number is then
-  traced through [`proof/lineage.json`](proof/lineage.json).
+  **16.1% → 0%** ([`proof/trust_issues_reduction.json`](proof/trust_issues_reduction.json)). The **same contract** is
+  reused on the serve side ([`pipeline/vertex_preflight.py`](pipeline/vertex_preflight.py)) so a Vertex/Cloud Run/LLM
+  consumer refuses to serve contract-failing data — one definition, both build and serve sides. `--strict` turns an
+  anomaly breach into a blocking SLA; a **daily scheduled CI run** logs each gate run to
+  [`proof/gate_run_log.jsonl`](proof/gate_run_log.jsonl). Dashboards, the semantic model, and the AI agent read **only the
+  post-gate silver/gold layer — never raw bronze**. Every number is then traced through [`proof/lineage.json`](proof/lineage.json).
 - **Portable metric layer** — fact + dims + mart counts reconcile GCP ↔ Fabric
   ([`proof/reconcile_gcp_fabric.json`](proof/reconcile_gcp_fabric.json)).
 

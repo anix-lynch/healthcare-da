@@ -67,3 +67,14 @@ def test_trust_reduction_proof_exists():
     r = json.load(open(ROOT / "proof/trust_issues_reduction.json"))
     assert r["pre_issue_rate_pct"] > r["post_issue_rate_pct"], "post rate must be lower than pre"
     assert r["post_issue_rate_pct"] < 1.0, f"post-gate issue rate must be <1%, got {r['post_issue_rate_pct']}"
+
+
+def test_vertex_preflight_allows_clean_blocks_dirty():
+    """The Vertex-side preflight reuses the contract: clean data serves, dirty data is refused."""
+    import sys
+    sys.path.insert(0, str(ROOT / "pipeline"))
+    from vertex_preflight import preflight
+    clean = [{"safetyreportid": "C1", "drug_name": "ASPIRIN", "occurcountry": "US", "is_serious": True, "received_date": "2026-01-01"}]
+    dirty = [{"safetyreportid": "D1", "drug_name": None, "occurcountry": "US", "is_serious": True, "received_date": "2026-01-01"}]
+    assert preflight(clean)["serve_allowed"] is True
+    assert preflight(dirty)["serve_allowed"] is False, "preflight must refuse to serve contract-failing data"

@@ -1,0 +1,2 @@
+{"run_grain": "contract_gate", "overall": "WARN", "rows": 11523, "quarantined": 0, "contract_pass_pct": 100.0, "anomaly": "PASS", "strict": false}
+{"run_grain": "contract_gate", "overall": "WARN", "rows": 11523, "quarantined": 0, "contract_pass_pct": 100.0, "anomaly": "PASS", "strict": true}
