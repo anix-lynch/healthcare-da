@@ -1,0 +1,20 @@
+{
+  "n_records": 11523,
+  "failure_modes": {
+    "null_drug_identifier": {
+      "pre": 1654,
+      "post": 0
+    },
+    "missing_serious_flag": {
+      "pre": 200,
+      "post": 0
+    },
+    "invalid_received_date": {
+      "pre": "n/a (derived in silver)",
+      "post": 0
+    }
+  },
+  "pre_issue_rate_pct": 16.09,
+  "post_issue_rate_pct": 0.0,
+  "note": "Aggregate issue rate across key failure modes, measured before vs after the contract gate."
+}

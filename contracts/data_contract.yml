@@ -4,12 +4,12 @@
 contract_version: "1.0.0"
 source: "openFDA drug/event"
 grain: "one row per (safetyreportid, drug)"
+grain_key: [safetyreportid, drug_name]   # observed grain; FAERS allows multi-entry (drug listed >1x/report) -> WARN, retained
 
 fields:
   safetyreportid:
     type: string
-    required: true
-    unique: true            # primary key — no dups, no nulls
+    required: true          # report id repeats across a report's drugs (grain is composite)
     on_violation: FAIL
 
   receivedate:

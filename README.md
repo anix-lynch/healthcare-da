@@ -15,8 +15,12 @@
   deploy via the Fabric Items API, not manual clicking. The deployed definitions are committed in [`model/`](model/).
 - **Sub-second answers** — real DAX through the Power BI engine: warm p50 ~0.5s, all < 1.3s
   ([`proof/dax_latency.json`](proof/dax_latency.json)).
-- **Trusted data, not vibes** — null drug-name 14.4% → 0.0% under a versioned contract, schema-drift
-  PASS/WARN/FAIL, every number traced through [`proof/lineage.json`](proof/lineage.json).
+- **Trusted data, not vibes** — a **live contract gate** ([`pipeline/run_contract_gate.py`](pipeline/run_contract_gate.py))
+  enforces the versioned contract on every run: PASS/WARN/FAIL, **code-generated** [`proof/quality_report.json`](proof/quality_report.json),
+  FAIL rows routed to a **quarantine lane**, plus a volume/serious-rate **anomaly check**. Aggregate issue rate
+  **16.1% → 0%** ([`proof/trust_issues_reduction.json`](proof/trust_issues_reduction.json)). Dashboards, the semantic
+  model, and the AI agent read **only the post-gate silver/gold layer — never raw bronze**. Every number is then
+  traced through [`proof/lineage.json`](proof/lineage.json).
 - **Portable metric layer** — fact + dims + mart counts reconcile GCP ↔ Fabric
   ([`proof/reconcile_gcp_fabric.json`](proof/reconcile_gcp_fabric.json)).
 

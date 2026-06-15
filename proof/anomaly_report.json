@@ -1,0 +1,10 @@
+{
+  "record_count": 11523,
+  "serious_rate": 0.6275,
+  "baseline_record_count": 11523,
+  "baseline_serious_rate": 0.6275,
+  "volume_drift_pct": 0.0,
+  "serious_rate_drift_pct": 0.0,
+  "threshold_pct": 20.0,
+  "status": "PASS"
+}
