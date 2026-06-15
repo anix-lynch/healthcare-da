@@ -69,6 +69,26 @@ def test_trust_reduction_proof_exists():
     assert r["post_issue_rate_pct"] < 1.0, f"post-gate issue rate must be <1%, got {r['post_issue_rate_pct']}"
 
 
+def test_semantic_layer_ai_ready():
+    """The semantic model must be AI-ready: governed measures, descriptions, and synonyms."""
+    m = json.load(open(ROOT / "model/model.bim"))
+    mdl = m.get("model", m)
+    tables = mdl["tables"]
+    measures = [me for t in tables for me in t.get("measures", [])]
+    assert len(measures) >= 9, f"expected >=9 governed measures, got {len(measures)}"
+    assert all(me.get("description") for me in measures), "every measure needs a description (AI-ready)"
+    assert all(t.get("description") for t in tables), "every entity needs a description"
+    with_syn = sum(1 for t in tables if any(a.get("name") == "synonyms" for a in t.get("annotations", [])))
+    assert with_syn >= 5, f"expected synonyms on >=5 entities, got {with_syn}"
+
+
+def test_semantic_complexity_proof():
+    """The semantic layer's complexity reduction must be measured, not estimated."""
+    r = json.load(open(ROOT / "proof/semantic_complexity.json"))
+    assert r["n_questions"] >= 10
+    assert r["median_token_reduction_x"] >= 2.0, "median token reduction must be >=2x"
+
+
 def test_vertex_preflight_allows_clean_blocks_dirty():
     """The Vertex-side preflight reuses the contract: clean data serves, dirty data is refused."""
     import sys

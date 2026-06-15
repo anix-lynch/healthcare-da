@@ -22,5 +22,7 @@ jobs:
         run: python pipeline/run_contract_gate.py
       - name: Vertex/LLM serve preflight (reuses the same contract)
         run: python pipeline/vertex_preflight.py
+      - name: Semantic complexity benchmark
+        run: python pipeline/semantic_complexity_bench.py
       - name: Run contract + metric tests
         run: python -m pytest tests/ -q

@@ -39,11 +39,13 @@
         "measures": [
           {
             "name": "Total Reports",
-            "expression": "SUM(mart_drug_safety_kpis[total_reports])"
+            "expression": "SUM(mart_drug_safety_kpis[total_reports])",
+            "description": "Total report count from the per-drug KPI mart."
           },
           {
             "name": "Avg Serious Rate",
-            "expression": "AVERAGE(mart_drug_safety_kpis[serious_rate])"
+            "expression": "AVERAGE(mart_drug_safety_kpis[serious_rate])",
+            "description": "Average of per-drug serious rate from the KPI mart."
           }
         ],
         "partitions": [
@@ -56,6 +58,13 @@
               "expressionSource": "DatabaseQuery",
               "schemaName": "dbo"
             }
+          }
+        ],
+        "description": "Per-drug pre-aggregated KPIs.",
+        "annotations": [
+          {
+            "name": "synonyms",
+            "value": "drug KPIs, drug safety KPIs"
           }
         ]
       },
@@ -101,19 +110,38 @@
         "measures": [
           {
             "name": "Reports",
-            "expression": "COUNTROWS(fact_adverse_events)"
+            "expression": "COUNTROWS(fact_adverse_events)",
+            "description": "Count of adverse-event report rows in context."
           },
           {
             "name": "Serious Rate (event-weighted)",
-            "expression": "DIVIDE(CALCULATE(COUNTROWS(fact_adverse_events), fact_adverse_events[is_serious] = TRUE()), COUNTROWS(fact_adverse_events))"
+            "expression": "DIVIDE(CALCULATE(COUNTROWS(fact_adverse_events), fact_adverse_events[is_serious] = TRUE()), COUNTROWS(fact_adverse_events))",
+            "description": "Share of in-context events flagged serious (event-weighted, not per-drug average)."
           },
           {
             "name": "Unique Drugs",
-            "expression": "DISTINCTCOUNT(fact_adverse_events[primary_drug])"
+            "expression": "DISTINCTCOUNT(fact_adverse_events[primary_drug])",
+            "description": "Distinct drugs in context."
           },
           {
             "name": "Reporting Countries",
-            "expression": "DISTINCTCOUNT(fact_adverse_events[occurcountry])"
+            "expression": "DISTINCTCOUNT(fact_adverse_events[occurcountry])",
+            "description": "Distinct reporting countries in context."
+          },
+          {
+            "name": "Serious Reports",
+            "expression": "CALCULATE(COUNTROWS(fact_adverse_events), fact_adverse_events[is_serious] = TRUE())",
+            "description": "Reports flagged serious only (filtered measure)."
+          },
+          {
+            "name": "Avg Reactions per Report",
+            "expression": "DIVIDE(SUM(fact_adverse_events[n_reactions]), COUNTROWS(fact_adverse_events))",
+            "description": "Mean number of distinct reactions per report \u2014 reaction burden."
+          },
+          {
+            "name": "Multi-Drug Reports",
+            "expression": "CALCULATE(COUNTROWS(fact_adverse_events), fact_adverse_events[n_drugs] > 1)",
+            "description": "Reports involving more than one drug (polypharmacy signal)."
           }
         ],
         "partitions": [
@@ -126,6 +154,13 @@
               "expressionSource": "DatabaseQuery",
               "schemaName": "dbo"
             }
+          }
+        ],
+        "description": "Adverse-event reports: one row per (report, drug) from openFDA FAERS.",
+        "annotations": [
+          {
+            "name": "synonyms",
+            "value": "adverse events, reports, FAERS, safety reports, events"
           }
         ]
       },
@@ -154,6 +189,13 @@
               "schemaName": "dbo"
             }
           }
+        ],
+        "description": "The drug a report concerns.",
+        "annotations": [
+          {
+            "name": "synonyms",
+            "value": "drug, medication, product, medicine"
+          }
         ]
       },
       {
@@ -180,6 +222,13 @@
               "expressionSource": "DatabaseQuery",
               "schemaName": "dbo"
             }
+          }
+        ],
+        "description": "The adverse reaction (MedDRA preferred term).",
+        "annotations": [
+          {
+            "name": "synonyms",
+            "value": "reaction, adverse reaction, side effect, event term"
           }
         ]
       },
@@ -218,6 +267,13 @@
               "schemaName": "dbo"
             }
           }
+        ],
+        "description": "Report calendar date for time slicing.",
+        "annotations": [
+          {
+            "name": "synonyms",
+            "value": "date, time, period, when"
+          }
         ]
       },
       {
@@ -245,6 +301,13 @@
               "schemaName": "dbo"
             }
           }
+        ],
+        "description": "Reporting country.",
+        "annotations": [
+          {
+            "name": "synonyms",
+            "value": "country, nation, geography, where"
+          }
         ]
       },
       {
@@ -271,6 +334,13 @@
               "expressionSource": "DatabaseQuery",
               "schemaName": "dbo"
             }
+          }
+        ],
+        "description": "Resolves the many-to-many between a report and its reactions.",
+        "annotations": [
+          {
+            "name": "synonyms",
+            "value": "report reaction bridge"
           }
         ]
       }

@@ -1,0 +1,91 @@
+{
+  "n_questions": 10,
+  "metric": "complexity a user/LLM must emit per question: semantic named-measure vs raw SQL over the star schema",
+  "median_token_reduction_x": 3.75,
+  "mean_token_reduction_x": 4.18,
+  "median_surface_reduction_x": 2.0,
+  "per_question": [
+    {
+      "q": "What is the serious rate for a given drug?",
+      "semantic_tokens": 10,
+      "sql_tokens": 30,
+      "token_reduction_x": 3.0,
+      "surfaces_semantic": 1,
+      "surfaces_raw": 2
+    },
+    {
+      "q": "How many reports per country?",
+      "semantic_tokens": 3,
+      "sql_tokens": 19,
+      "token_reduction_x": 6.33,
+      "surfaces_semantic": 1,
+      "surfaces_raw": 2
+    },
+    {
+      "q": "Top reactions for a drug?",
+      "semantic_tokens": 11,
+      "sql_tokens": 44,
+      "token_reduction_x": 4.0,
+      "surfaces_semantic": 1,
+      "surfaces_raw": 4
+    },
+    {
+      "q": "Serious rate by quarter?",
+      "semantic_tokens": 9,
+      "sql_tokens": 46,
+      "token_reduction_x": 5.11,
+      "surfaces_semantic": 1,
+      "surfaces_raw": 2
+    },
+    {
+      "q": "Unique drugs reported?",
+      "semantic_tokens": 2,
+      "sql_tokens": 9,
+      "token_reduction_x": 4.5,
+      "surfaces_semantic": 1,
+      "surfaces_raw": 1
+    },
+    {
+      "q": "Reporting countries for a drug?",
+      "semantic_tokens": 6,
+      "sql_tokens": 20,
+      "token_reduction_x": 3.33,
+      "surfaces_semantic": 1,
+      "surfaces_raw": 2
+    },
+    {
+      "q": "Serious rate by country for a drug?",
+      "semantic_tokens": 12,
+      "sql_tokens": 41,
+      "token_reduction_x": 3.42,
+      "surfaces_semantic": 1,
+      "surfaces_raw": 3
+    },
+    {
+      "q": "Monthly report trend?",
+      "semantic_tokens": 4,
+      "sql_tokens": 25,
+      "token_reduction_x": 6.25,
+      "surfaces_semantic": 1,
+      "surfaces_raw": 2
+    },
+    {
+      "q": "Total reports overall?",
+      "semantic_tokens": 2,
+      "sql_tokens": 7,
+      "token_reduction_x": 3.5,
+      "surfaces_semantic": 1,
+      "surfaces_raw": 1
+    },
+    {
+      "q": "Average serious rate across drugs?",
+      "semantic_tokens": 3,
+      "sql_tokens": 7,
+      "token_reduction_x": 2.33,
+      "surfaces_semantic": 1,
+      "surfaces_raw": 1
+    }
+  ],
+  "claimable_range_x": "2.3-6.3x token reduction; median 3.8x, and the LLM reasons over 1 named measure instead of up to 4 joined tables",
+  "honesty_note": "Measures prompt/query complexity (tokens + join surfaces), not wall-clock time. Runtime speed is separately proven in proof/dax_latency.json (p50 ~0.5s)."
+}
