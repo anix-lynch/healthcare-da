@@ -1,4 +1,5 @@
 # Healthcare Analytics on Microsoft Fabric — openFDA
+**Built by [Anix Lynch](https://gozeroshot.dev) — LA-based AI/Data Engineer**
 
 > **AI-native Analytics Engineer** · openFDA drug-safety analytics on Microsoft Fabric, built code-first (no GUI).
 > Real openFDA FAERS reports land in OneLake as Delta, a Direct Lake semantic model and a Power BI
